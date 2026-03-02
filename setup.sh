@@ -40,6 +40,10 @@ apt install -y \
 # ─── 2. Install MongoDB ──────────────────────────────────────────────
 if ! command -v mongod &> /dev/null; then
     info "Installing MongoDB 8.0..."
+
+    # Remove any stale MongoDB repo files
+    rm -f /etc/apt/sources.list.d/mongodb-org-*.list
+
     curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
         gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
 
