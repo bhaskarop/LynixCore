@@ -5,7 +5,7 @@ from pyrogram import Client, filters
 # Define a modern UI message for no permission
 NO_PERMISSION_MESSAGE = """<b>
 You don't have permission to use this command.
-Contact the bot owner @nairobiangoon!
+Contact the bot owner @bhaskargg!
 </b>"""
 
 # Define a success message header

@@ -12,7 +12,7 @@ async def cmd_del(Client, message):
             open("FILES/config.json", "r", encoding="utf-8").read())["OWNER_ID"]
         if user_id not in OWNER_ID:
             resp = """<b>You Don't Have Permission To Use This Command.    
-Contact Bot Owner @nairobiangoon !</b>"""
+Contact Bot Owner @bhaskargg !</b>"""
             await message.reply_text(resp)
             return
         else:
@@ -39,7 +39,7 @@ Deauthorized ❌
 
 Group Chat ID: {chat_id}
 
-Message: This Group is no longer Authorized to use Our Bot. Deauthorized By @nairobiangoon
+Message: This Group is no longer Authorized to use Our Bot. Deauthorized By @bhaskargg
        </b> """
                 try:
                     await Client.send_message(chat_id, user_resp)

@@ -84,7 +84,7 @@ def send_server_alert():
     process_id = os.getpid()
 
     stats = f"""<b>
-Master Checker Kenya ⚡️ ( @checkskebot ) 
+Master Checker Kenya ⚡️ ( @LynixCheckouter ) 
 
 Bot Deployed Successfully ✅
 

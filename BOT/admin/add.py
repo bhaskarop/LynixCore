@@ -11,7 +11,7 @@ async def cmd_add(client, message):
             resp = (
                 "<b>⛔️ Access Denied</b>\n\n"
                 "<i>You do not have permission to use this command.</i>\n"
-                "Please contact the bot owner @nairobiangoon for access."
+                "Please contact the bot owner @bhaskargg for access."
             )
             await message.reply_text(resp, quote=True)
             return
@@ -36,7 +36,7 @@ async def cmd_add(client, message):
             chat_resp = (
                 "<b>✅ Authorized</b>\n\n"
                 f"<b>Group Chat ID:</b> <code>{chat_id}</code>\n\n"
-                "<i>This group is now authorized to use our bot. Authorized by @nairobiangoon.</i>"
+                "<i>This group is now authorized to use our bot. Authorized by @bhaskargg.</i>"
             )
             try:
                 await client.send_message(chat_id, chat_resp)

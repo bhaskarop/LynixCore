@@ -12,7 +12,7 @@ async def update_dead_amount(Client, message):
 
 Message: To Perform This Action, You Need Admin Level Power. 
 
-Contact @nairobiangoon For More Info ✅</b>"""
+Contact @bhaskargg For More Info ✅</b>"""
             await message.reply_text(resp)
             return
 
@@ -61,7 +61,7 @@ async def remove_command(Client, message):
 
 Message: To Perform This Action, You Need Admin Level Power. 
 
-Contact @nairobiangoon For More Info ✅</b>"""
+Contact @bhaskargg For More Info ✅</b>"""
             await message.reply_text(resp)
             return
 

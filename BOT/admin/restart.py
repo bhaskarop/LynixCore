@@ -14,7 +14,7 @@ async def cmd_reboot(client, message):
 
 Message: To perform this action, you need admin level power. 
 
-Contact @nairobiangoon For More Info ✅</b>"""
+Contact @bhaskargg For More Info ✅</b>"""
             await message.reply_text(resp, message.id)
             return
 

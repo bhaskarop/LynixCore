@@ -15,7 +15,7 @@ async def update_dead_amount(Client, message):
 
 Message: Do Perform This Action, You Need Admin Level Power. 
 
-Contact @nairobiangoon For More Info ✅</b>"""
+Contact @bhaskargg For More Info ✅</b>"""
             await message.reply_text(resp)
             return
         try:
@@ -67,7 +67,7 @@ async def update_shopify_url(Client, message):
 
 Message: Do Perform This Action, You Need Admin Level Power. 
 
-Contact @nairobiangoon For More Info ✅</b>"""
+Contact @bhaskargg For More Info ✅</b>"""
             await message.reply_text(resp)
             return
 
