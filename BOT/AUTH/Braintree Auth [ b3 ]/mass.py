@@ -19,7 +19,7 @@ async def mchkfunc(fullcc, user_id):
         try:
             proxies = await get_proxy_format()  # Pass user_id here
             session = httpx.AsyncClient(
-                timeout=30, proxies=proxies, follow_redirects=True)
+                timeout=30, proxy=proxies, follow_redirects=True)
             result = await create_braintree_auth(fullcc, session)
             getresp = await get_charge_resp(result, user_id, fullcc)
             response = getresp["response"]

@@ -23,7 +23,7 @@ def check_proxy(proxy_url):
             "https": f"http://{proxy_user}:{proxy_password}@{proxy_ip}:{proxy_port}",
         }
         
-        response = requests.get("http://www.google.com", proxies=proxies, timeout=5)
+        response = requests.get("http://www.google.com", proxy=proxies, timeout=5)
         response.raise_for_status()
         return response.status_code == 200
     except requests.exceptions.ProxyError as e:

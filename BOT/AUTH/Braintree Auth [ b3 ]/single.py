@@ -61,7 +61,7 @@ Usage: /b3 cc|mes|ano|cvv</b>"""
         start = time.perf_counter()
         proxies = await get_proxy_format()  # Pass user_id here
 
-        session = httpx.AsyncClient(timeout=30, proxies=proxies, follow_redirects=True)
+        session = httpx.AsyncClient(timeout=30, proxy=proxies, follow_redirects=True)
         result = await create_braintree_auth(fullcc, session)
         getbin = await get_bin_details(cc)
         getresp = await get_charge_resp(result, user_id, fullcc)

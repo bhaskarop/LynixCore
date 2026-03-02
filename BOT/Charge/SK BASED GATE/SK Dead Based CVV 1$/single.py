@@ -61,7 +61,7 @@ Usage: /svv cc|mes|ano|cvv</b>"""
         start = time.perf_counter()
         proxies = await get_proxy_format()
         session = httpx.AsyncClient(
-            timeout=30, proxies=proxies, follow_redirects=True)
+            timeout=30, proxy=proxies, follow_redirects=True)
         sks = await getallsk()
         result = await create_deadsk_charge(fullcc, sks, session, user_id)
         getbin = await get_bin_details(cc)

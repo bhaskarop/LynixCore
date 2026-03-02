@@ -75,7 +75,7 @@ Number Of CC Check : [{len(ccs)} / 25]
         start = time.perf_counter()
         proxies = await get_proxy_format()
         session = httpx.AsyncClient(
-            timeout=30, proxies=proxies, follow_redirects=True)
+            timeout=30, proxy=proxies, follow_redirects=True)
         sks = await getallsk()
         works = [mxvvfunc(i, sks, user_id, session) for i in ccs]
         worker_num = int(json.loads(
