@@ -85,7 +85,7 @@ Number Of CC Check : [{len(ccs)} / 25]
         amt = 0
         start = time.perf_counter()
         # proxies    = await get_proxy_format()
-        # session    = httpx.AsyncClient(timeout= 60 , proxies = proxies , follow_redirects=True )
+        # session    = httpx.AsyncClient(timeout= 60 , proxy=proxies , follow_redirects=True )
         works = [mchkfunc(i, user_id) for i in ccs]
         worker_num = int(json.loads(
             open("FILES/config.json", "r", encoding="utf-8").read())["THREADS"])

@@ -17,7 +17,7 @@ from TOOLS.getcc_for_mass import *
 async def mchkfunc(fullcc , user_id ):
     try:  
         proxies  = await get_proxy_format()
-        session  = httpx.AsyncClient(timeout = 30 , proxies = proxies ) 
+        session  = httpx.AsyncClient(timeout = 30 , proxy=proxies ) 
         result   = await create_cvv_charge(fullcc , session) 
         getresp  = await get_charge_resp(result, user_id, fullcc)
         response = getresp["response"]
@@ -74,7 +74,7 @@ async def stripe_mass_auth_cmd(Client, message):
         amt        = 0
         start      = time.perf_counter()
         # proxies    = await get_proxy_format()
-        # session    = httpx.AsyncClient(timeout = 100 , proxies = proxies , follow_redirects = True )  
+        # session    = httpx.AsyncClient(timeout = 100 , proxy=proxies , follow_redirects = True )  
         works      = [mchkfunc(i, user_id ) for i in ccs]
         worker_num = int(json.loads(open("FILES/config.json", "r" , encoding="utf-8").read())["THREADS"])
 
