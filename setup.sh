@@ -39,13 +39,14 @@ apt install -y \
 
 # ─── 2. Install MongoDB ──────────────────────────────────────────────
 if ! command -v mongod &> /dev/null; then
-    info "Installing MongoDB..."
-    curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
-        gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
+    info "Installing MongoDB 8.0..."
+    curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+        gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
 
-    echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] \
-https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | \
-        tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+    # Use noble (24.04) repo — works on newer Ubuntu versions too
+    echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] \
+https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | \
+        tee /etc/apt/sources.list.d/mongodb-org-8.0.list
 
     apt update
     apt install -y mongodb-org
