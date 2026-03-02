@@ -22,14 +22,12 @@ async def result_logs(fullz , gate , result):
 
 async def get_proxy_format():
     import random
-    getproxy       = random.choice(open("FILES/proxy.txt", "r", encoding="utf-8").read().splitlines())
-    proxy_ip       = getproxy.split(":")[0]
-    proxy_port     = getproxy.split(":")[1]
-    proxy_user     = getproxy.split(":")[2]
-    proxy_password = getproxy.split(":")[3]
+    getproxy = random.choice(open("FILES/proxy.txt", "r", encoding="utf-8").read().splitlines()).strip()
+    # Format: user:pass@host:port
+    proxy_url = f"http://{getproxy}"
     proxies = {
-        "https://": f"http://{proxy_user}:{proxy_password}@{proxy_ip}:{proxy_port}",
-        "http://": f"http://{proxy_user}:{proxy_password}@{proxy_ip}:{proxy_port}",
+        "https://": proxy_url,
+        "http://": proxy_url,
     }
     return proxies
 
