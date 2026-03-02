@@ -205,7 +205,7 @@ async def log_cmd_error(message):
 
 async def error_log(log_message, cmd=None, user_id=None, extra=None):
     try:
-        import datetime
+        import datetime, httpx
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Write to local file
@@ -213,30 +213,34 @@ async def error_log(log_message, cmd=None, user_id=None, extra=None):
             file.write(f"[{timestamp}] {log_message}\n")
 
         # Send to Telegram debug group
-        import urllib.parse, httpx
         BOT_TOKEN = json.loads(open("FILES/config.json", "r", encoding="utf-8").read())["BOT_TOKEN"]
 
-        header = "⚠️ <b>Error Log</b>\n━━━━━━━━━━━━━━"
+        header = "⚠️ Error Log\n━━━━━━━━━━━━━━"
         parts = [header]
         if cmd:
-            parts.append(f"<b>Command:</b> <code>{cmd}</code>")
+            parts.append(f"Command: {cmd}")
         if user_id:
-            parts.append(f"<b>User:</b> <code>{user_id}</code>")
-        parts.append(f"<b>Time:</b> <code>{timestamp}</code>")
+            parts.append(f"User: {user_id}")
+        parts.append(f"Time: {timestamp}")
         if extra:
-            parts.append(f"<b>Info:</b> <code>{extra}</code>")
+            parts.append(f"Info: {extra}")
 
         # Truncate traceback to fit Telegram message limit
         tb_text = str(log_message)
         if len(tb_text) > 3000:
             tb_text = tb_text[:3000] + "\n... (truncated)"
-        parts.append(f"\n<b>Traceback:</b>\n<pre>{tb_text}</pre>")
+        parts.append(f"\nTraceback:\n{tb_text}")
 
         msg = "\n".join(parts)
-        encoded = urllib.parse.quote_plus(msg)
+
         async with httpx.AsyncClient(timeout=10) as session:
-            await session.get(
-                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={DEBUG_CHAT}&text={encoded}&parse_mode=HTML"
+            await session.post(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                json={
+                    "chat_id": DEBUG_CHAT,
+                    "text": msg,
+                    "parse_mode": "",
+                }
             )
     except:
         pass
