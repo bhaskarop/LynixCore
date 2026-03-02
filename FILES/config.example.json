@@ -1,0 +1,11 @@
+{
+    "API_ID"       :  "",
+    "API_HASH"     :  "",
+    "PHONE_NUMBER" :  "",
+    "BOT_TOKEN"    :  "",
+    "DEBUG_BOT"    :  "",
+    "OWNER_ID"     :  "",
+    "LOGS_CHAT"    :  "",
+    "THREADS"      :   15,
+    "BOT_BY"       :  ""
+}

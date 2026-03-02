@@ -1,0 +1,13 @@
+# Secrets
+FILES/config.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.session
+*.session-journal
+venv/
+
+# OS
+Thumbs.db
+.DS_Store
