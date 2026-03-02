@@ -1,8 +1,8 @@
 import os
 import json
-import traceback
 from pyrogram import Client, filters
 from FUNC.usersdb_func import *
+from FUNC.defs import *
 
 
 def extract_user_details(user_list):
@@ -70,11 +70,10 @@ async def showuser(Client, message):
             os.remove(file_path)
 
         except Exception as e:
-            print(f"Error while saving JSON file: {e}")
-            await error_log(traceback.format_exc())
+            await log_cmd_error(message)
 
     except Exception as e:
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 if __name__ == "__main__":
     app = Client("my_bot")

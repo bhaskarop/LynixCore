@@ -122,7 +122,6 @@ Usage: /svv cc|mes|ano|cvv</b>"""
         await session.aclose()
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
         

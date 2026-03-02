@@ -91,5 +91,4 @@ async def cmd_bin(client, message):
         await message.reply_text(resp, quote=True)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

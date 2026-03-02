@@ -331,5 +331,4 @@ Bot by - <a href="tg://user?id=6622603977">Toͥnmͣoͫy 〔 Ɠφ 〕</a>
         
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

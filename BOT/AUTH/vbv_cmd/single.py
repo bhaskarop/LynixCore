@@ -95,6 +95,5 @@ Unsupported card type."""
         await deductcredit(user_id)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         print(f"Error: {str(e)}")

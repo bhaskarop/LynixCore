@@ -55,5 +55,4 @@ async def cmd_add(client, message):
                 await message.reply_text(resp, quote=True)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

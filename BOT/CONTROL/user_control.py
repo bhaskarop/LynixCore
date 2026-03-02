@@ -68,8 +68,7 @@ Status: Successful
     except IndexError:
         await message.reply_text("<b>Invalid proxy format. Please provide a valid proxy.</b>", message.id)
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         await message.reply_text(f"<b>Something went wrong ❌: {e}</b>", message.id)
 
 
@@ -83,8 +82,7 @@ async def removeproxy(client, message):
         resp = "<b>Proxy successfully removed ✅</b>"
         await message.reply_text(resp, message.id)
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         await message.reply_text(f"<b>Something went wrong ❌: {e}</b>", message.id)
 
 
@@ -99,8 +97,7 @@ async def viewproxy(client, message):
         resp = f"<b>Your current proxy: {proxy_url}</b>"
         await message.reply_text(resp, message.id)
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         await message.reply_text(f"<b>Something went wrong ❌: {e}</b>", message.id)
 
 
@@ -136,8 +133,7 @@ async def add_brod(client, message):
         await message.reply_text(resp, reply_to_message_id=message.id)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 
@@ -178,8 +174,7 @@ Status: Successful
 
         await message.reply_text(resp)
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         await message.reply_text(f"<b>Something went wrong ❌: {e}</b>")
 
 
@@ -222,8 +217,7 @@ Status: Successful
     </b>"""
         await message.reply_text(resp, message.id)
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         await message.reply_text(f"<b>Something went wrong ❌: {e}</b>", message.id)
 
 
@@ -264,6 +258,5 @@ async def selfcmd(client, message):
     </b>"""
         await message.reply_text(resp, reply_to_message_id=message.id)
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         await message.reply_text(f"<b><span style='color: #e74c3c;'>Something went wrong ❌: {e}</span></b>", reply_to_message_id=message.id)

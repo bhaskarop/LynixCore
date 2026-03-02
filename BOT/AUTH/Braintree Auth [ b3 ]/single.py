@@ -110,5 +110,4 @@ Usage: /b3 cc|mes|ano|cvv</b>"""
         await session.aclose()
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

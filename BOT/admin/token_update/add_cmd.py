@@ -40,8 +40,7 @@ NEW DEAD_AMOUNT: {new_dead_amount}
         await message.reply_text(resp)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 
@@ -90,8 +89,7 @@ NEW SITE: {new_url_so}
         await message.reply_text(resp)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 

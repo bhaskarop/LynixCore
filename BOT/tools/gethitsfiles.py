@@ -29,5 +29,4 @@ Reason: Invalid or Incorrect Secret Key
 ━━━━━━━━━━━━━━</b>""",
                                     reply_to_message_id=message.id)
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

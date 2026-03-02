@@ -34,8 +34,7 @@ Click Each of Them Below to Know Them Better .</b>
             reply_markup=InlineKeyboardMarkup(WELCOME_BUTTONS))
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 async def callback_command(client, message):
@@ -65,8 +64,7 @@ Click Each of Them Below to Know Them Better .</b>
             reply_markup=InlineKeyboardMarkup(WELCOME_BUTTONS))
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 @Client.on_message(filters.command("start", [".", "/"]))
@@ -107,8 +105,7 @@ MASTER Checker  ■■■
         await Client.edit_message_text(message.chat.id, edit.id, text, reply_markup=InlineKeyboardMarkup(WELCOME_BUTTON))
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 async def register_user(user_id, username, antispam_time, reg_at):
@@ -177,8 +174,7 @@ Explore My Various Commands And Abilities By Tapping on Commands Button .
         await message.reply_text(resp, reply_markup=InlineKeyboardMarkup(WELCOME_BUTTON))
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 async def callback_register(Client, message):
@@ -226,8 +222,7 @@ Explore My Various Commands And Abilities By Tapping on Commands Button .
         await message.reply_text(resp, message.id, reply_markup=InlineKeyboardMarkup(WELCOME_BUTTON))
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 @Client.on_callback_query()

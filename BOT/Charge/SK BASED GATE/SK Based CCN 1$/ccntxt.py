@@ -246,5 +246,4 @@ If you Buy credit, then type /buy .
             await setantispamtime(user_id)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

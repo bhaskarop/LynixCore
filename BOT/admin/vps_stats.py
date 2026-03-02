@@ -127,5 +127,4 @@ Contact Bot Owner @nairobiangoon !</b>"""
         await message.reply_text(done, message.id)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

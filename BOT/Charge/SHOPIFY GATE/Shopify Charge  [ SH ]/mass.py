@@ -33,8 +33,7 @@ async def mchkfunc(fullcc, user_id):
             return f"Card↯ <code>{fullcc}</code>\n<b>Status - {status}</b>\n<b>Result -⤿ {response} ⤾</b>\n\n"
 
         except Exception as e:
-            import traceback
-            await error_log(traceback.format_exc())
+            await log_cmd_error(message)
             if attempt < retries - 1:
                 await asyncio.sleep(0.5)
                 continue
@@ -129,5 +128,4 @@ Number Of CC Check : [{len(ccs)} / 25]
         await setantispamtime(user_id)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

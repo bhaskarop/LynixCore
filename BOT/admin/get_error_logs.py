@@ -27,5 +27,4 @@ Contact Bot Owner @nairobiangoon !</b>"""
         await Client.delete_messages(message.chat.id, delete.id)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

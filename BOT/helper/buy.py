@@ -42,8 +42,7 @@ async def cmd_buy(client, message):
         await message.reply_text(price_list, reply_markup=keyboard, disable_web_page_preview=True)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 @Client.on_callback_query(filters.regex("show_payment_methods"))
@@ -84,8 +83,7 @@ async def show_payment_methods(client, callback_query):
         await callback_query.message.edit_text(payment_info, reply_markup=keyboard)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 @Client.on_callback_query(filters.regex("show_price_list"))
@@ -125,8 +123,7 @@ async def show_price_list(client, callback_query):
         await callback_query.message.edit_text(price_list, reply_markup=keyboard)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 @Client.on_callback_query(filters.regex("close_message"))
@@ -135,5 +132,4 @@ async def close_message(client, callback_query):
         await callback_query.message.delete()
         
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

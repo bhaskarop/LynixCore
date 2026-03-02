@@ -54,5 +54,4 @@ Message: Sorry ! Due to Some Suspicious or Wrong Behavior Your Account got Demot
             await Client.send_message(user_id, user_resp)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

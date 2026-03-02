@@ -73,5 +73,4 @@ async def cmd_howgp(client, message):
         await plan_expirychk(user_id)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

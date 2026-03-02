@@ -117,5 +117,4 @@ Message: We can't find any giftcode like that . your provided giftcode is invali
             await message.reply_text(resp, message.id)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

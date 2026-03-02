@@ -38,5 +38,4 @@ Type /redeem GRAND-XXXX-XXXX-XXXX-PAA</b>"""
         await message.reply_text(text, message.id)
             
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

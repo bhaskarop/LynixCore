@@ -25,8 +25,7 @@ async def masscvvfunc(fullcc, user_id, session, bin_status):
 
         return f"Card↯ <code>{fullcc}</code>\n<b>Status - {status}</b>\n<b>Result -⤿ {response} ⤾</b>\n\n"
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         return f"<code>{fullcc}</code>\n<b>Result - Lookup Error ❌</b>\n"
 
 @Client.on_message(filters.command("mvbv", [".", "/"]))
@@ -126,5 +125,4 @@ Number Of CC Check : [{len(ccs)} / 25]
         await setantispamtime(user_id)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

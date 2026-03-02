@@ -96,8 +96,7 @@ Status: Scraping...
             await cc_public_scrape(message, user, Client, channel_link, limit, delete, role)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 @Client.on_message(filters.command("scrsk", [".", "/"]))
@@ -179,8 +178,7 @@ Status: Scraping...
             await sk_public_scrape(message, user, Client, channel_link, limit, delete, role)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 @Client.on_message(filters.command("scrbin", [".", "/"]))
@@ -281,5 +279,4 @@ Status: Scraping...
             )
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

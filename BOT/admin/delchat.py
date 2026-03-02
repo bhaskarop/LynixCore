@@ -1,6 +1,7 @@
 import json
 from pyrogram import Client, filters
 from FUNC.usersdb_func import *
+from FUNC.defs import *
 
 
 @Client.on_message(filters.command("del", [".", "/"]))
@@ -55,5 +56,4 @@ Message: This Group (<code>{chat_id}</code>) is not in the list of authorized ch
                 await message.reply_text(resp)
 
     except Exception as e:
-        await message.reply_text(str(e))
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

@@ -60,5 +60,4 @@ Message: Congratz ! Your Account Successfully Promoted To "Premium" User . Enjoy
             await Client.send_message(user_id, user_resp)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

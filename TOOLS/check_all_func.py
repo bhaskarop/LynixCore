@@ -104,12 +104,7 @@ Reduce Antispam Time /buy Using Paid Plan
     
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
-        try:
-            await message.reply_text("Try Again later" ,  reply_to_message_id = message.id)
-        except:
-            pass
+        await log_cmd_error(message)
         return False , False 
 
 
@@ -165,12 +160,6 @@ Type /howgp to Know The Step
         return True , status
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
-        try:
-            await message.reply_text("Try Again later" ,  reply_to_message_id = message.id)
-        except:
-            pass
+        await log_cmd_error(message)
         return False , False
-
 

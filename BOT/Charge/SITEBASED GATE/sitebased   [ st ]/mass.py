@@ -29,8 +29,7 @@ async def mchkfunc(fullcc , user_id ):
         return f"Card↯ <code>{fullcc}</code>\n<b>Status - {status}</b>\n<b>Result -⤿ {response} ⤾</b>\n\n"
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
         return f"<code>{fullcc}</code>\n<b>Result - Declined ❌</b>\n"
     
 
@@ -124,5 +123,4 @@ Number Of CC Check : [{len(ccs)} / 25]
         await setantispamtime(user_id)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

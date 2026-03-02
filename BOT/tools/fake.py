@@ -60,9 +60,7 @@ async def cmd_fake(Client, message):
                 await message.reply_text(resp)  # Reply to the original message
 
         except Exception as e:
-            import traceback
-            await error_log(traceback.format_exc())
+            await log_cmd_error(message)
 
     except Exception as outer_exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

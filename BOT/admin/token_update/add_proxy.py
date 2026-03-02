@@ -28,5 +28,4 @@ Total Proxy Count: {len(proxy.splitlines())}
         await message.reply_text(resp, message.id)
         
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

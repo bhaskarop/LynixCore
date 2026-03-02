@@ -180,10 +180,66 @@ Country: {country} - {flag} - {currency}
         await error_log(traceback.format_exc())
 
 
-async def error_log(log_message):
+DEBUG_CHAT = "-1003771046807"
+
+
+async def log_cmd_error(message):
+    """Log error with full debug context from a command handler."""
+    import traceback
+    tb = traceback.format_exc()
+    cmd = "unknown"
+    user_id = "unknown"
+    extra = "N/A"
     try:
-        with open("error_logs.txt", "a" , encoding="utf-8") as file:
-            file.write(str(log_message) + "\n")
+        if hasattr(message, 'text') and message.text:
+            cmd = message.text.split()[0]
+            extra = message.text[:100]
+        if hasattr(message, 'from_user') and message.from_user:
+            user_id = str(message.from_user.id)
+    except:
+        pass
+    await error_log(tb, cmd=cmd, user_id=user_id, extra=extra)
+    try:
+        await message.reply_text("<b>⚠️ An error occurred. Admin has been notified.</b>")
+    except:
+        pass
+
+
+async def error_log(log_message, cmd=None, user_id=None, extra=None):
+    try:
+        import datetime
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Write to local file
+        with open("error_logs.txt", "a", encoding="utf-8") as file:
+            file.write(f"[{timestamp}] {log_message}\n")
+
+        # Send to Telegram debug group
+        import urllib.parse, httpx
+        BOT_TOKEN = json.loads(open("FILES/config.json", "r", encoding="utf-8").read())["BOT_TOKEN"]
+
+        header = "⚠️ <b>Error Log</b>\n━━━━━━━━━━━━━━"
+        parts = [header]
+        if cmd:
+            parts.append(f"<b>Command:</b> <code>{cmd}</code>")
+        if user_id:
+            parts.append(f"<b>User:</b> <code>{user_id}</code>")
+        parts.append(f"<b>Time:</b> <code>{timestamp}</code>")
+        if extra:
+            parts.append(f"<b>Info:</b> <code>{extra}</code>")
+
+        # Truncate traceback to fit Telegram message limit
+        tb_text = str(log_message)
+        if len(tb_text) > 3000:
+            tb_text = tb_text[:3000] + "\n... (truncated)"
+        parts.append(f"\n<b>Traceback:</b>\n<pre>{tb_text}</pre>")
+
+        msg = "\n".join(parts)
+        encoded = urllib.parse.quote_plus(msg)
+        async with httpx.AsyncClient(timeout=10) as session:
+            await session.get(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={DEBUG_CHAT}&text={encoded}&parse_mode=HTML"
+            )
     except:
         pass
 

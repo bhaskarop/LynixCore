@@ -56,5 +56,4 @@ Type /register to continue.
         await message.reply_text(send_info)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

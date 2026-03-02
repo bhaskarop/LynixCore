@@ -27,8 +27,7 @@ async def get_user_info(user_id, client, message):
         await message.reply_text(resp, quote=True)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 
 @Client.on_message(filters.command("id", [".", "/"]))
@@ -49,5 +48,4 @@ This Chat ID: <code>{message.chat.id}</code>
     </b>"""
             await message.reply_text(texta, quote=True)
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

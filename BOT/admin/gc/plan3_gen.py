@@ -40,5 +40,4 @@ Type /redeem XCC-XXXX-XXXX-XXXX</b>"""
         await message.reply_text(text, message.id)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

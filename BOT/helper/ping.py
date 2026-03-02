@@ -21,5 +21,4 @@ async def cmd_ping(client, message):
         await client.edit_message_text(message.chat.id, edit.id, textb)
 
     except Exception:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

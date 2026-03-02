@@ -20,6 +20,4 @@ Thats It . Now Once He is got online , He will Approve Your Group ✅ .
         await message.reply_text(texta, message.id)
 
     except Exception as e:
-        import traceback
-
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

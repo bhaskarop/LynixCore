@@ -1,7 +1,7 @@
-import traceback
 import json
 from pyrogram import Client, filters
 from FUNC.usersdb_func import *
+from FUNC.defs import *
 
 
 async def remove_user_from_db(user_id):
@@ -53,4 +53,4 @@ Message: User has been removed from the database.
         await message.reply_text(resp, message.id)
 
     except Exception as e:
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

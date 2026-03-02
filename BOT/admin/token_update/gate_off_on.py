@@ -49,8 +49,7 @@ Now /{new_command} gate not available.⚠️
         await message.reply_text(resp)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
 
 @Client.on_message(filters.command("gateon", [".", "/"]))
 async def remove_command(Client, message):
@@ -98,5 +97,4 @@ Contact @nairobiangoon For More Info ✅</b>"""
         await message.reply_text(resp)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

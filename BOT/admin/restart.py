@@ -26,5 +26,4 @@ Contact @nairobiangoon For More Info ✅</b>"""
 
     except Exception as e:
         await message.reply_text(f"An error occurred: {str(e)}")
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

@@ -123,5 +123,4 @@ Message: Maximum Generated Amount is 10K.</b>"""
             os.remove(filename)
 
     except Exception as e:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)

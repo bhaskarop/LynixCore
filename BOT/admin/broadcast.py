@@ -94,5 +94,4 @@ Time Taken : {hour} Hour {min} Min
         await message.reply_text(done, message.id)
 
     except:
-        import traceback
-        await error_log(traceback.format_exc())
+        await log_cmd_error(message)
