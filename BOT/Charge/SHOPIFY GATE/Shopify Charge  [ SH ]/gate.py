@@ -30,33 +30,31 @@ async def create_shopify_charge(fullz , session):
 
 
             
+        url = "https://givepowerstore.org/cart/add.js"
+
         headers = {
             'authority': 'givepowerstore.org',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'accept': '*/*',
             'accept-language': 'en-US,en;q=0.9',
-            'cache-control': 'max-age=0',
-            'content-type': 'multipart/form-data; boundary=----WebKitFormBoundarybp7L6PMIHMqWXBbN',
+            'content-type': 'application/x-www-form-urlencoded',
             'origin': 'https://givepowerstore.org',
             'referer': 'https://givepowerstore.org/products/10-donation',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
-            'sec-fetch-user': '?1',
-            'upgrade-insecure-requests': '1',
             'user-agent': user_agent,
+            'x-requested-with': 'XMLHttpRequest',
         }
 
-        files = {
-            'form_type': (None, 'product'),
-            'utf8': (None, '✓'),
-            'id': (None, '41408502792330'),
-            'quantity': (None, '1'),
-            'add': (None, ''),
-            'product-id': (None, '6914075951242'),
-            'section-id': (None, 'product-template'),
+        data = {
+            'form_type': 'product',
+            'utf8': '✓',
+            'id': '41408502792330',
+            'product-id': '6914075951242',
+            'section-id': 'product-template',
         }
 
-        response = await session.post('https://givepowerstore.org/cart/add', headers=headers, files=files)
+        response = await session.post(url=url, headers=headers, data=data)
             
 
         await asyncio.sleep(0.5)

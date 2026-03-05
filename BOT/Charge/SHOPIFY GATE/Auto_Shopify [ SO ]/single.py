@@ -16,7 +16,7 @@ async def so_auth_cmd(Client, message):
         user_id = str(message.from_user.id)
         checkall = await check_all_thing(Client, message)
 
-        gateway="Shopify Charge 10$"
+        gateway="Shopify Charge 1$"
         cmd="/so"
 
         if checkall[0] == False:
