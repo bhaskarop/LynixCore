@@ -140,8 +140,10 @@ async def create_shopify_charge(fullz , session):
             quit()
         if 'Shipping Method' in five.text or 'Shipping method' in five.text:
             d = await session.get(str(third.url) + '/shipping_rates?step=shipping_method')
-        ship_tag = find_between(
-            d.text, '<div class="radio-wrapper" data-shipping-method="', '"')
+            ship_tag = find_between(
+                d.text, '<div class="radio-wrapper" data-shipping-method="', '"')
+        else:
+            return "Shipping Method Not Found"
         
 
         # print(ship_tag)

@@ -96,7 +96,6 @@ async def get_charge_resp(result, user_id, fullcc):
                 or "PAYMENTS_CREDIT_CARD_GENERIC" in result.text
                 or "Card number is incorrect" in result.text
                 or "The shipping options have changed for your order. Review your selection and try again" in result.text
-
               ):
             status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
             response = "Card was declined"

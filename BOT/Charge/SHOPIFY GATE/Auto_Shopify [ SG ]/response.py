@@ -11,29 +11,6 @@ async def get_charge_resp(result, user_id, fullcc):
             response = result
             hits = "NO"
 
-    # KEY "Thank you for your purchase!" 
-    # KEY "Order #" 
-    # KEY "Your order is confirmed" 
-    # KEY "CARD_SUCCEEDED" 
-    # KEY "CARD_APPROVED" 
-    # KEY "PaymentSucceeded" 
-    # KEY "PaymentApproved" 
-    # KEY "PaymentCompleted" 
-    # KEY "CARD_COMPLETED" 
-    # KEY "CARD_SUCCESS" 
-    # KEY "SucceededReceipt" 
-    # KEY "ApprovedReceipt" 
-    # KEY "CompletedReceipt" 
-    # KEY "succeeded" 
-    # KEY "CARD_COMPLETED" 
-    # KEY "CARD_SUCCEEDED" 
-    # KEY "\"redirectUrl\":\"" 
-    # KEY "Your order is confirmed" 
-    # KEY "Thank you" 
-    # KEY "Thank you for your purchase!" 
-
-
-
             if (
                 "SUCCESS" in result or
                 "Order #" in result or
@@ -75,8 +52,6 @@ async def get_charge_resp(result, user_id, fullcc):
                     or "2010 Card Issuer Declined CVV" in result
                     or "Your card's security code is incorrect." in result
                     or "Security code was not matched by the processor" in result
-
-
             ):
                 status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎"
                 response = "Security code was not matched by the processor"
@@ -105,7 +80,6 @@ async def get_charge_resp(result, user_id, fullcc):
                 or "CompletePaymentChallenge" in result
                 or "AUTHENTICATION_ERROR" in result
                 or "ActionRequiredReceipt" in result
-                or "stripe_3ds2_fingerprint" in result
             ):
                 status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎"
                 response = "OTP Required"
@@ -124,31 +98,81 @@ async def get_charge_resp(result, user_id, fullcc):
                 hits = "NO"
                 await refundcredit(user_id)
 
-
             elif ("Card was declined" in result
                     or "Your card was declined." in result
                     or "CARD_DECLINED" in result
                     or "PAYMENTS_CREDIT_CARD_GENERIC" in result
                     or "Card number is incorrect" in result
                     or "The shipping options have changed for your order. Review your selection and try again" in result
-
                 ):
-                response = " Card was declined"
-
-            elif "Your payment details couldn’t be verified. Check your card details and try again." in result:
-                response = "Your payment details couldn’t be verified"
-
-            elif "PAYMENTS_CREDIT_CARD_BASE_EXPIRED" in result:
-                response = "CARD EXPIRE"
-
-            else:
                 status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
-                response = await find_between(result, "System was not able to complete the payment. ", ".")
-                if response is None:
-                    response = "Card Declined"
-                    await result_logs(fullcc, "Stripe Charge SG", result)
                 response = "Card was declined"
                 hits = "NO"
+
+            elif "Your payment details couldn't be verified. Check your card details and try again." in result:
+                status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
+                response = "Your payment details couldn't be verified"
+                hits = "NO"
+
+            elif "PAYMENTS_CREDIT_CARD_BASE_EXPIRED" in result:
+                status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
+                response = "CARD EXPIRE"
+                hits = "NO"
+
+        elif (
+            "SUCCESS" in result.text or
+            "ThankYou" in result.text or
+            "Thank you" in result.text or
+            "thank_you" in result.text or
+            "success" in result.text or
+            "Your order is confirmed" in result.text or
+            "your order is confirmed" in result.text or
+            "classicThankYouPageUrl" in result.text or
+            '"__typename":"ProcessedReceipt"' in result.text
+        ):
+            status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅"
+            response = "order is confirmed 🔥"
+            hits = "YES"
+            await forward_resp(fullcc, "SHOPIFY CHARGE [SG]", response)
+
+        elif "insufficient_funds" in result.text or "card has insufficient funds." in result.text:
+            status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎"
+            response = "Insufficient Funds"
+            hits = "YES"
+            await forward_resp(fullcc, "SHOPIFY CHARGE [SG]", response)
+
+        elif (
+            "INCORRECT_CVC" in result.text
+            or "INVALID_CVC" in result.text
+            or "Your card's security code is incorrect." in result.text
+        ):
+            status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎"
+            response = "Security code was not matched by the processor"
+            hits = "YES"
+            await forward_resp(fullcc, "SHOPIFY CHARGE [SG]", response)
+
+        elif (
+            "three_d_secure_redirect" in result.text
+            or "OTP Required" in result.text
+            or "3d_secure_2" in result.text
+            or "CompletePaymentChallenge" in result.text
+            or "ActionRequiredReceipt" in result.text
+        ):
+            status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎"
+            response = "OTP Required"
+            hits = "YES"
+            await forward_resp(fullcc, "SHOPIFY CHARGE [SG]", response)
+
+        elif "CARD_DECLINED" in result.text or "Card was declined" in result.text:
+            status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
+            response = "Card was declined"
+            hits = "NO"
+
+        else:
+            status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
+            response = "Card Declined"
+            hits = "NO"
+            await result_logs(fullcc, "Stripe Charge SG", result)
 
         json = {
             "status": status,

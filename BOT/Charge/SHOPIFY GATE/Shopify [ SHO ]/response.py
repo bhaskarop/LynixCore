@@ -98,13 +98,19 @@ async def get_charge_resp(result, user_id, fullcc):
                 or "The shipping options have changed for your order. Review your selection and try again" in result.text
 
               ):
+            status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
             response = "CARD DECLINED"
+            hits = "NO"
 
         elif "Your payment details couldn’t be verified. Check your card details and try again." in result.text:
+            status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
             response = "Your payment details couldn’t be verified"
+            hits = "NO"
 
         elif "PAYMENTS_CREDIT_CARD_BASE_EXPIRED" in result.text:
+            status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
             response = "CARD EXPIRE"
+            hits = "NO"
 
         else:
             status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
