@@ -1,4 +1,4 @@
-import time
+﻿import time
 import os
 from FUNC.defs import *
 from datetime import timedelta
@@ -95,7 +95,7 @@ CC Scraped ✅
 ● Duplicate Removed: {duplicate}
 ● Scraped By: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️ [ {role} ]
 ● Time Taken: {min} Minutes {sec} Seconds
-● Bot by - <a href="tg://user?id=6622603977">nairobiangoon〔 Ɠφ 〕</a>
+● Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺〔 Ɠφ 〕</a>
 """
             await message.reply_document(document=file_name, caption=caption, reply_to_message_id=message.id)
             os.remove(file_name)
@@ -198,7 +198,7 @@ CC Scraped ✅
 ● Duplicate Removed: {dublicate}
 ● Scraped By: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️ [ {role} ]
 ● Time Taken: {min} Minutes {sec} Seconds
-● Bot by - <a href="tg://user?id=6622603977">Toͥnmͣoͫy 〔 Ɠφ 〕</a>
+● Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a>
 </b>
 """
             await message.reply_document(document=file_name, caption=caption, reply_to_message_id=message.id)
@@ -275,7 +275,7 @@ CC Scraped ✅
 ● Duplicate Removed: {dublicate}
 ● Scraped By: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️ [ {role} ]
 ● Time Taken: {min} Minutes {sec} Seconds
-● Bot by - <a href="tg://user?id=6622603977">Toͥnmͣoͫy 〔 Ɠφ 〕</a>
+● Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a>
 """
             await message.reply_document(document=file_name, caption=caption, reply_to_message_id=message.id)
             os.remove(file_name)
@@ -355,7 +355,7 @@ CC Scraped ✅
 ● Duplicate Removed: {dublicate}
 ● Scraped By: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️ [ {role} ]
 ● Time Taken: {min} Minutes {sec} Seconds
-● Bot by - <a href="tg://user?id=6622603977">Toͥnmͣoͫy 〔 Ɠφ 〕</a>
+● Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a>
 """
             await message.reply_document(document=file_name, caption=caption, reply_to_message_id=message.id)
             os.remove(file_name)
@@ -424,7 +424,7 @@ SK Scraped ✅
 ● SK Found: {amt}
 ● Scraped By: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️ [ {role} ]
 ● Time Taken: {min} Minutes {sec} Seconds
-● Bot by - <a href="tg://user?id=6622603977">Toͥnmͣoͫy 〔 Ɠφ 〕</a>
+● Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a>
 """
             await message.reply_document(document=file_name, caption=caption, reply_to_message_id=message.id)
             os.remove(file_name)
@@ -480,7 +480,7 @@ Message: We Didnt Find Any SK In {channel_title} .
             await message.reply_text(resp, message.id)
 
         else:
-            file_name = f"downloads/{amt}x_SK_Scraped_For_{message.from_user.id}_By_@Mnairobiangoon.txt"
+            file_name = f"downloads/{amt}x_SK_Scraped_For_{message.from_user.id}_By_@MKaiZen﹒ ⁺.txt"
             with open(file_name, "a", encoding="UTF-8") as f:
                 for x in ccs:
                     f.write(f"{x}\n")
@@ -498,7 +498,7 @@ SK Scraped ✅
 ● Duplicate Removed: {dublicate}
 ● Scraped By: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️ [ {role} ]
 ● Time Taken: {min} Minutes {sec} Seconds
-● Bot by - <a href="tg://user?id=6622603977">Toͥnmͣoͫy 〔 Ɠφ 〕</a>
+● Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a>
 """
             await message.reply_document(document=file_name, caption=caption, reply_to_message_id=message.id)
             os.remove(file_name)

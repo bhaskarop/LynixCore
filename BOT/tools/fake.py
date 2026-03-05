@@ -60,7 +60,7 @@ async def cmd_fake(Client, message):
 🌏 <b>Country:</b> <code>{fake_country}</code>
 ━━━━━━━━━━━━━━
 <b>Checked By:</b> <a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a> [ {role} ]
-<b>Bot by:</b> <a href="tg://user?id=6622603977">nairobiangoon</a>
+<b>Owned by:</b> <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a> [ @bhaskargg ]
 """
             await message.reply_text(resp)
 

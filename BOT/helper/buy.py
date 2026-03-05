@@ -24,7 +24,7 @@ async def cmd_buy(client, message):
                 [
                     InlineKeyboardButton(
                         text="🛎 Knock Admin",
-                        url="http://t.me/nairobiangoon",
+                        url="http://t.me/bhaskargg",
                     ),
                     InlineKeyboardButton(
                         text="💳 Payment Area",
@@ -69,7 +69,7 @@ async def show_payment_methods(client, callback_query):
                     ),
                     InlineKeyboardButton(
                         text="🛎 Knock Admin",
-                        url="http://t.me/nairobiangoon",
+                        url="http://t.me/bhaskargg",
                     ),
                 ],
                 [
@@ -105,7 +105,7 @@ async def show_price_list(client, callback_query):
                 [
                     InlineKeyboardButton(
                         text="🛎 Knock Admin",
-                        url="http://t.me/nairobiangoon",
+                        url="http://t.me/bhaskargg",
                     ),
                     InlineKeyboardButton(
                         text="💳 Payment Area",

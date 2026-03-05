@@ -1,4 +1,4 @@
-import httpx
+﻿import httpx
 from pyrogram import Client, filters
 from FUNC.usersdb_func import *
 from TOOLS.check_all_func import *
@@ -70,7 +70,7 @@ SK:➺
 Loading...
 
 Checked By <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> 
-Bot by - <a href="tg://user?id=6622603977">Toͥnmͣoͫy</a>
+Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a>
         </b> """
     )
 
@@ -92,7 +92,7 @@ SK:➺
 Last Updated: {last_updated}
 
 Checked By <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> 
-Bot by - <a href="tg://user?id=6622603977">nairobiangoon</a>
+Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a> [ @bhaskargg ]
                     </b> """
             )
             refresh_count += 1

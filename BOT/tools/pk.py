@@ -135,7 +135,7 @@ Pending Balance :➺ <code>{pending_balance}</code>
 ━━━━━━━━━━━━━━ 
 
 Checked By <a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a> [ {role} ] 
-Bot by - <a href="tg://user?id=6622603977">nairobiangoon 〔 Ɠφ 〕</a>
+Owned by - <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a> [ @bhaskargg ]
 </b>"""
         await message.reply_text(resp, message.id)
 

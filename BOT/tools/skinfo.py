@@ -1,4 +1,4 @@
-import httpx
+﻿import httpx
 from pyrogram import Client, filters
 from FUNC.usersdb_func import *
 from TOOLS.check_all_func import *
@@ -77,7 +77,7 @@ Message: Unable to fetch SK info. Check if the SK is valid.
    - Pending Balance: {pending_balance}
 ━━━━━━━━━━━━━━
 <b>Checked By:</b> <a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a> [ {role} ]
-<b>Bot by:</b> <a href="tg://user?id=6622603977">Toͥnmͣoͫy</a>
+<b>Owned by:</b> <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a>
 """
         await message.reply_text(resp)
 
