@@ -23,8 +23,13 @@ async def result_logs(fullz , gate , result):
 async def get_proxy_format():
     import random
     getproxy = random.choice(open("FILES/proxy.txt", "r", encoding="utf-8").read().splitlines()).strip()
-    # Format: user:pass@host:port → http://user:pass@host:port
-    return f"http://{getproxy}"
+    # Format: host:port:user:pass → http://user:pass@host:port
+    parts = getproxy.split(":")
+    if len(parts) == 4:
+        host, port, user, passwd = parts
+        return f"http://{user}:{passwd}@{host}:{port}"
+    else:
+        return f"http://{getproxy}"
 
 
 async def getmessage(message):
