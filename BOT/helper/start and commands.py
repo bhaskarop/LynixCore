@@ -559,15 +559,15 @@ Total Auth Commands: 1
       ➜ Single: /sh cc|mm|yy|cvv ✅
       ➜ Mass: /msh cc|mm|yy|cvv ✅
 
-   2. Shopify Charge 27.51$:
+   2. Shopify Charge 1$:
       ➜ Single: /so cc|mm|yy|cvv ✅
       ➜ Mass: /mso cc|mm|yy|cvv ✅
 
-   3. Shopify Charge 20$:
+   3. Shopify Charge 25$:
       ➜ Single: /sho cc|mm|yy|cvv ✅
       ➜ Mass: /msho cc|mm|yy|cvv ✅
 
-   4. Shopify Charge 20$:
+   4. Shopify Charge 1$:
       ➜ Single: /sg cc|mm|yy|cvv ✅
       ➜ Mass: /msg cc|mm|yy|cvv ✅
 
