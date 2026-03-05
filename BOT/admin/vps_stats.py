@@ -83,7 +83,7 @@ async def get_server_stats():
     global_network_usage  = await get_global_network_usage()
 
     done = f"""<b>
-Master Checker ⚡ Hosting Info Retrieved Successfully ✅
+Lynix Core ⚡ Hosting Info Retrieved Successfully ✅
 ━━━━━━━━━━━━━━ 
 Server Details:
 Server OS : {server_os}
@@ -97,7 +97,7 @@ Server CPU Usage : {cpu_usage}
 Server Internet Speed : {server_internet_speed}
 
 Application Details:
-Application Name : Master Checker ⚡️
+Application Name : Lynix Core ⚡️
 Application CPU Usage : {script_cpu_usage}
 Application Ram Usage : {script_ram_usage}
 Application Network Usage : {global_network_usage}

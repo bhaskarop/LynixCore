@@ -7,7 +7,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 async def cmd_buy(client, message):
     try:
         price_list = """
-📝 <b>Master Checker Kenya ⚡️ Plans :</b>
+📝 <b>Lynix Core ⚡️ Plans :</b>
 ━━━━━━━━━━━━━━
 ● <b>Starter</b> - Unlimited Credits + Premium Access For 1 Week at <b>$500kes</b>
 
@@ -49,7 +49,7 @@ async def cmd_buy(client, message):
 async def show_payment_methods(client, callback_query):
     try:
         payment_info = """
-📝 <b>Master Checker Kenya⚡️ Methods:</b>
+📝 <b>Lynix Core ⚡️ Methods:</b>
 ━━━━━━━━━━━━━━
 
 💰 <b>MPESA NUMBER /PAY</b> - <code>+254702700072</code>
@@ -90,7 +90,7 @@ async def show_payment_methods(client, callback_query):
 async def show_price_list(client, callback_query):
     try:
         price_list = """
-📝 <b>Master Checker Kenya ⚡️ Plans :</b>
+📝 <b>Lynix Core ⚡️ Plans :</b>
 ━━━━━━━━━━━━━━
 ● <b>Starter</b> - Unlimited Credits + Premium Access For 1 Week at <b>$500kes</b>
 

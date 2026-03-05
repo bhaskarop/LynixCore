@@ -48,7 +48,7 @@ Contact Bot Owner @bhaskargg !</b>"""
                 paid_user += 1
 
         done = f"""<b>
-Master Checker ⚡ @LynixCheckouter Statistics ✅
+Lynix Core ⚡ @LynixCheckouter Statistics ✅
 ━━━━━━━━━━━━━━ 
 Total Commands : 52
 Database Type : MongoDB

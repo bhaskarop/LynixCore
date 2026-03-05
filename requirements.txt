@@ -13,3 +13,4 @@ cryptography
 pytz
 openai
 pycountry
+Faker

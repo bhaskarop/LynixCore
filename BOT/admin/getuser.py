@@ -23,7 +23,7 @@ Contact Bot Owner @bhaskargg !</b>"""
         reg_at   = info["reg_at"]
 
         send_info = f"""<b>
-<b>{message.text.split(" ")[1]}</b> Info on MASTER Checker ⚡
+<b>{message.text.split(" ")[1]}</b> Info on Lynix Core ⚡
 ━━━━━━━━━━━━━━
 ● ID: <code>{message.text.split(" ")[1]}</code>
 ● Profile Link: <a href="tg://user?id={message.text.split(" ")[1]}">Profile Link</a>

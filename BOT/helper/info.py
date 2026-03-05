@@ -37,7 +37,7 @@ Type /register to continue.
         reg_at = results["reg_at"]
 
         send_info = f"""<b>
-🔍 Your Info on MASTER Checker ⚡
+🔍 Your Info on Lynix Core ⚡
 ━━━━━━━━━━━━━━
 👤 First Name: {first_name}
 🆔 ID: <code>{user_id}</code>

@@ -1,8 +1,23 @@
 import httpx
 from pyrogram import Client, filters
-from bs4 import BeautifulSoup
+from faker import Faker
 from FUNC.usersdb_func import *
 from TOOLS.check_all_func import *
+
+# Map of supported country codes to Faker locales
+COUNTRY_LOCALES = {
+    'us': 'en_US', 'uk': 'en_GB', 'gb': 'en_GB', 'ca': 'en_CA',
+    'au': 'en_AU', 'de': 'de_DE', 'fr': 'fr_FR', 'es': 'es_ES',
+    'it': 'it_IT', 'br': 'pt_BR', 'mx': 'es_MX', 'in': 'en_IN',
+    'jp': 'ja_JP', 'kr': 'ko_KR', 'cn': 'zh_CN', 'ru': 'ru_RU',
+    'nl': 'nl_NL', 'se': 'sv_SE', 'no': 'no_NO', 'dk': 'da_DK',
+    'fi': 'fi_FI', 'pl': 'pl_PL', 'pt': 'pt_PT', 'at': 'de_AT',
+    'ch': 'de_CH', 'be': 'fr_BE', 'ie': 'en_IE', 'nz': 'en_NZ',
+    'za': 'en_ZA', 'ar': 'es_AR', 'co': 'es_CO', 'cl': 'es_CL',
+    'ke': 'en_US', 'ng': 'en_US', 'ph': 'en_PH', 'th': 'th_TH',
+    'tr': 'tr_TR', 'ua': 'uk_UA', 'cz': 'cs_CZ', 'hu': 'hu_HU',
+    'ro': 'ro_RO', 'bg': 'bg_BG', 'hr': 'hr_HR', 'sk': 'sk_SK',
+}
 
 
 @Client.on_message(filters.command("fake", [".", "/"]))
@@ -18,31 +33,21 @@ async def cmd_fake(Client, message):
             if len(message.text.split(" ")) > 1:
                 country_code = message.text.split(" ")[1].lower()
             else:
-                country_code = 'us'  # Default to United States if no country code is provided
+                country_code = 'us'
 
-            async with httpx.AsyncClient() as client:
-                response = await client.get(f'https://www.fakexy.com/fake-address-generator-{country_code}')
-                soup = BeautifulSoup(response.text, 'html.parser')
+            locale = COUNTRY_LOCALES.get(country_code, 'en_US')
+            fake = Faker(locale)
 
-                # Extracting fake address details
-                fake_name = soup.find('td', text='Full Name').find_next_sibling(
-                    'td').get_text(strip=True).title()
-                fake_address = soup.find('td', text='Street').find_next_sibling(
-                    'td').get_text(strip=True).title()
-                fake_city = soup.find(
-                    'td', text='City/Town').find_next_sibling('td').get_text(strip=True).title()
-                fake_state = soup.find(
-                    'td', text='State/Province/Region').find_next_sibling('td').get_text(strip=True).title()
-                fake_country = soup.find('td', text='Country').find_next_sibling(
-                    'td').get_text(strip=True).title()
-                fake_zipcode = soup.find(
-                    'td', text='Zip/Postal Code').find_next_sibling('td').get_text(strip=True).title()
-                fake_gender = soup.find('td', text='Gender').find_next_sibling(
-                    'td').get_text(strip=True).title()
-                fake_phone = soup.find('td', text='Phone Number').find_next_sibling(
-                    'td').get_text(strip=True).title()
+            fake_name = fake.name()
+            fake_address = fake.street_address()
+            fake_city = fake.city()
+            fake_state = fake.state() if hasattr(fake, 'state') else fake.city()
+            fake_country = country_code.upper()
+            fake_zipcode = fake.postcode()
+            fake_gender = fake.random_element(elements=('Male', 'Female'))
+            fake_phone = fake.phone_number()
 
-                resp = f"""
+            resp = f"""
 <b>Fake Info Created Successfully ✅</b>
 ━━━━━━━━━━━━━━
 🆔 <b>Full Name:</b> <code>{fake_name}</code>
@@ -57,7 +62,7 @@ async def cmd_fake(Client, message):
 <b>Checked By:</b> <a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a> [ {role} ]
 <b>Bot by:</b> <a href="tg://user?id=6622603977">nairobiangoon</a>
 """
-                await message.reply_text(resp)  # Reply to the original message
+            await message.reply_text(resp)
 
         except Exception as e:
             await log_cmd_error(message)

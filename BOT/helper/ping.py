@@ -8,13 +8,13 @@ async def cmd_ping(client, message):
     try:
         start = time.perf_counter()
         resp  = """<b>
-🤖 Checking Master Checker Kenya ⚡ Ping...
+🤖 Checking Lynix Core ⚡ Ping...
         </b>"""
         edit  = await message.reply_text(resp, quote=True)
         end   = time.perf_counter()
         
         textb = f"""<b>
-🤖 Bot Name: Master Checker Kenya ⚡
+🤖 Bot Name: Lynix Core ⚡
 ✅ Bot Status: Running
 📶 Ping: {(end-start)*1000:.2f} ms
         </b>"""
