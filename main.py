@@ -1,3 +1,11 @@
+import asyncio
+
+# Fix for Python 3.12+ where get_event_loop() raises RuntimeError
+try:
+    asyncio.get_event_loop()
+except RuntimeError:
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
 from pyrogram import Client 
 import json
 from FUNC.server_stats import *
