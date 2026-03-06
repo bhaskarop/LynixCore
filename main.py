@@ -1,4 +1,11 @@
 import asyncio
+import sys, os
+
+# Force UTF-8 output on Windows console
+if sys.platform == "win32":
+    os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # Fix for Python 3.12+ where get_event_loop() raises RuntimeError
 try:
@@ -38,5 +45,11 @@ if __name__ == "__main__":
     # send_server_alert()
     print("Done Bot Active ✅")
     print("NOW START BOT ONCE MY MASTER")
+    print("Press Ctrl+C to stop the bot\n")
 
-    bot.run()
+    try:
+        bot.run()
+    except KeyboardInterrupt:
+        print("\n\nBot stopped by user (Ctrl+C) 🛑")
+    finally:
+        print("Crafted With <3 By Bhaskar")

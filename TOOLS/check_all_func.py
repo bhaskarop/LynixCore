@@ -58,7 +58,7 @@ Buy Premium Plan Using /buy to Continue
             resp = f"""<b>
 Unauthorized Chats ⚠️
 
-Message: Only Chats Approved By My Master Can Only Use Me . To Get Approved Your Chats Follow The Steps .
+Message: Only Chats Approved By My Lynix Can Only Use Me . To Get Approved Your Chats Follow The Steps .
 
 Type /howgp to Know The Step
 </b>"""
@@ -150,7 +150,7 @@ Buy Premium Plan Using /buy to Continue
             resp = f"""<b>
 Unauthorized Chats ⚠️
 
-Message: Only Chats Approved By My Master Can Only Use Me . To Get Approved Your Chats Follow The Steps .
+Message: Only Chats Approved By My Lynix Can Only Use Me . To Get Approved Your Chats Follow The Steps .
 
 Type /howgp to Know The Step
 </b>"""

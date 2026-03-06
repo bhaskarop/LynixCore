@@ -53,10 +53,10 @@ async def filter(Client, message):
 
         if cards:
             if len(cards.split('\n')) >= 32:
-                with open('MasterϟFiltered.txt', 'w') as file:
+                with open('LynixϟFiltered.txt', 'w') as file:
                     file.write(cards)
-                await message.reply_document('MasterϟFiltered.txt', quote=True)
-                os.remove('MasterϟFiltered.txt')
+                await message.reply_document('LynixϟFiltered.txt', quote=True)
+                os.remove('LynixϟFiltered.txt')
             else:
                 await message.reply_text(f"""<code>{cards}</code>""", quote=True)
         else:
