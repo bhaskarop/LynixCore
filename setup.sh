@@ -51,40 +51,18 @@ do_update() {
     info "Stopping bot..."
     systemctl stop "$APP_NAME" 2>/dev/null || true
 
+    info "Pulling latest code..."
     cd "$APP_DIR"
-
-    # If not a git repo yet, initialize from REPO_URL
-    if [ ! -d "$APP_DIR/.git" ]; then
-        if [ -z "$REPO_URL" ]; then
-            error "$APP_DIR is not a git repo. Set REPO_URL in setup.sh and try again."
-        fi
-        info "No .git found — initializing repo from $REPO_URL ..."
-        git init
-        git remote add origin "$REPO_URL"
-        git fetch origin
-        git checkout -f "$REPO_BRANCH"
-    else
-        info "Pulling latest code..."
-        git fetch origin
-        git reset --hard "origin/$REPO_BRANCH"
-    fi
-
-    chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
+    git pull
 
     info "Installing Python dependencies..."
-    "$APP_DIR/venv/bin/pip" install --upgrade pip -q
     "$APP_DIR/venv/bin/pip" install -r "$APP_DIR/requirements.txt" -q
 
-    info "Fixing ownership..."
-    chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
-
     info "Starting bot..."
-    systemctl daemon-reload
     systemctl start "$APP_NAME"
 
     echo ""
     info "Update complete! Bot restarted."
-    echo ""
     systemctl status "$APP_NAME" --no-pager -l
     echo ""
 }
