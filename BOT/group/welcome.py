@@ -5,14 +5,7 @@ import httpx
 # API for random anime girl images (SFW)
 WAIFU_API_URL = "https://api.waifu.pics/sfw/waifu"
 
-# Fallback images in case API is down
-FALLBACK_IMAGES = [
-    "https://telegra.ph/file/a5a2bb456bf3eecdbbb99.mp4",
-    "https://telegra.ph/file/03c6e49bea9ce6c908b87.mp4",
-    "https://telegra.ph/file/9ebf412f09cd7d2ceaaef.mp4",
-    "https://telegra.ph/file/293cc10710e57530404f8.mp4",
-    "https://telegra.ph/file/506898de518534ff68ba0.mp4",
-]
+FALLBACK_IMAGES = []
 
 MESSAGE = """<b>
 👋 Hey {name}!
@@ -44,9 +37,10 @@ async def welcome(client, message):
         except Exception:
             img_url = None
 
-        # Fallback to static list if API fails
+        # If API failed and no fallback, just send text only
         if not img_url:
-            img_url = random.choice(FALLBACK_IMAGES)
+            await message.reply_text(text, quote=True)
+            return
 
         # waifu.pics returns images, so send as photo
         await message.reply_photo(photo=img_url, caption=text, quote=True)
