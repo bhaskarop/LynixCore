@@ -11,6 +11,49 @@ async def get_charge_resp(result, user_id, fullcc):
             response = result
             hits = "NO"
 
+            if (
+                "Charged Successfully" in result
+                or "Your order is confirmed" in result
+                or "order is confirmed" in result
+                or "success" in result.lower()
+            ):
+                status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅"
+                response = "order is confirmed 🔥"
+                hits = "YES"
+                await forward_resp(fullcc, "SHOPIFY CHARGE [SHO]", response)
+
+            elif "Insufficient funds" in result or "insufficient_funds" in result:
+                status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅"
+                response = "Insufficient Funds"
+                hits = "YES"
+                await forward_resp(fullcc, "SHOPIFY CHARGE [SHO]", response)
+
+            elif (
+                "security code is incorrect" in result
+                or "INCORRECT_CVC" in result
+                or "INVALID_CVC" in result
+            ):
+                status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅"
+                response = "Your card's security code is incorrect"
+                hits = "YES"
+                await forward_resp(fullcc, "SHOPIFY CHARGE [SHO]", response)
+
+            elif "OTP Required" in result or "CompletePaymentChallenge" in result:
+                status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅"
+                response = "CVV MATCH - OTP Required"
+                hits = "YES"
+                await forward_resp(fullcc, "SHOPIFY CHARGE [SHO]", response)
+
+            elif "Card was declined" in result or "CARD_DECLINED" in result:
+                status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
+                response = "Card was declined"
+                hits = "NO"
+
+            elif "Card has expired" in result or "EXPIRED_CARD" in result:
+                status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
+                response = "Card Expired"
+                hits = "NO"
+
         elif (
             "SUCCESS" in result.text or
             "ThankYou" in result.text or

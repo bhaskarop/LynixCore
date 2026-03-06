@@ -1,0 +1,1019 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><title>Checkout - BOLD3 Coffee</title><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height"/><link rel="icon" href="https://cdn.shopify.com/s/files/1/1657/8911/files/blue_cross_transparent_USE_4be47966-15e4-4ba2-8fb3-0da87dd84c88.png?v=1724872488&amp;crop=center&amp;width=32&amp;height=32" type="image/png"/><link rel="preconnect" href="https://cdn.shopify.com" crossorigin/><link rel="dns-prefetch" href="https://cdn.shopify.com" crossorigin/><link rel="preconnect" href="https://checkout.pci.shopifyinc.com" crossorigin/><link rel="dns-prefetch" href="https://checkout.pci.shopifyinc.com" crossorigin/><link rel="preconnect" href="https://checkout.shopify.com" crossorigin/><link rel="dns-prefetch" href="https://checkout.shopify.com" crossorigin/><link rel="preconnect" href="https://shop.app" crossorigin/><link rel="dns-prefetch" href="https://shop.app" crossorigin/><link rel="preconnect" href="https://server.shop.app" crossorigin/><link rel="dns-prefetch" href="https://server.shop.app" crossorigin/></head><body class="Loading">
+<script>
+(function() {
+  try {
+    // No need to use the value of syntaxCheck, as we only care if it is valid syntax
+    const [syntaxCheck] = ((abc = 1) => [Promise.resolve(abc)])();
+    window.checkoutMinimalBrowserSupport = typeof window.fetch === 'function';
+  } catch (err) {}
+})();
+</script>
+<script>
+if (window.checkoutMinimalBrowserSupport !== true) {
+  document.documentElement.innerHTML = "<div class=\"error-container\"><style>* {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n}\n\nhtml {\n  font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  background: #F1F1F1;\n  font-size: 62.5%;\n  color: #303030;\n  min-height: 100%;\n}\n\nbody {\n  padding: 0;\n  margin: 0;\n  line-height: 2.7rem;\n}\n\nh1 {\n  font-size: 1.8rem;\n  font-weight: 400;\n  margin: 0 0 1.4rem 0;\n}\n\np {\n  font-size: 1.5rem;\n  margin: 0;\n}\n\n.error-container {\n  padding: 4rem 3.5rem;\n}\n\n@media all and (min-width:500px) {\n  .error-container {\n    padding: 7.5rem 10.5rem;\n    align-items: center;\n  }\n}</style><div><h1>It looks like your browser version isn't supported.</h1><p>Please update your browser to access the checkout and complete your purchase.</p></div></div>";
+}
+</script><style>
+    
+    :root {
+      
+    
+    --x-skeleton-color-global-accent: hsl(214, 100%, 41%);
+    --x-skeleton-color-global-background: hsl(0, 0%, 100%);
+    --x-skeleton-color-global-backgroundSubdued: hsl(0, 0%, 96%);
+    --x-skeleton-color-global-border: hsl(0, 0%, 87%);
+    --x-skeleton-color-global-text: hsl(0, 0%, 0%);
+    --x-skeleton-color-global-textContrast: hsl(0, 0%, 100%);
+    --x-skeleton-color-global-textSubdued: hsl(0, 0%, 44%);
+    --x-skeleton-color-global-textSubdued200: hsl(0, 0%, 90%);
+
+    --x-skeleton-color-schemes-scheme2-base-background: hsl(0, 0%, 96%);
+    --x-skeleton-color-schemes-scheme2-base-backgroundSubdued: hsl(0, 0%, 93%);
+    --x-skeleton-color-schemes-scheme2-base-border: hsl(0, 0%, 84%);
+    --x-skeleton-color-schemes-scheme2-base-text: hsl(0, 0%, 0%);
+    --x-skeleton-color-schemes-scheme2-base-textContrast: hsl(0, 0%, 96%);
+    --x-skeleton-color-schemes-scheme2-base-textSubdued: hsl(0, 0%, 40%);
+    --x-skeleton-color-schemes-scheme2-base-textSubdued200: hsl(0, 0%, 80%);
+
+    --x-skeleton-color-schemes-scheme6-base-background: hsl(214, 100%, 41%);
+    --x-skeleton-color-schemes-scheme6-base-backgroundSubdued: hsl(214, 100%, 44%);
+    --x-skeleton-color-schemes-scheme6-base-border: hsl(228, 33%, 66%);
+    --x-skeleton-color-schemes-scheme6-base-text: hsl(0, 0%, 100%);
+    --x-skeleton-color-schemes-scheme6-base-textContrast: hsl(0, 0%, 0%);
+    --x-skeleton-color-schemes-scheme6-base-textSubdued: hsla(0, 0%, 100%, 0.66);
+    --x-skeleton-color-schemes-scheme6-base-textSubdued200: hsla(0, 0%, 100%, 0.20);
+  
+    --x-skeleton-color-global-accent: #00a3e0;
+    --x-skeleton-color-schemes-scheme1-base-background: #ffffff;
+--x-skeleton-color-schemes-scheme1-base-backgroundSubdued: #f6f6f6;
+--x-skeleton-color-schemes-scheme1-base-border: #dfdfdf;
+--x-skeleton-color-schemes-scheme1-base-text: #000000;
+--x-skeleton-color-schemes-scheme1-base-textContrast: #ffffff;
+--x-skeleton-color-schemes-scheme1-base-textSubdued: #0000008f;
+--x-skeleton-color-schemes-scheme1-base-textSubdued200: #0000001a;
+--x-skeleton-color-schemes-scheme2-base-background: #fafafa;
+--x-skeleton-color-schemes-scheme2-base-backgroundSubdued: #f1f1f1;
+--x-skeleton-color-schemes-scheme2-base-border: #dadada;
+--x-skeleton-color-schemes-scheme2-base-text: #000000;
+--x-skeleton-color-schemes-scheme2-base-textContrast: #ffffff;
+--x-skeleton-color-schemes-scheme2-base-textSubdued: #0000008f;
+--x-skeleton-color-schemes-scheme2-base-textSubdued200: #0000001a;
+
+
+
+
+
+
+  
+      
+
+      --x-skeleton-typography-line-small: 1.2;
+      --x-skeleton-typography-line-base: 1.5;
+      --x-skeleton-line-quantity-size: 2.1rem;
+
+      --x-skeleton-typography-size-small: 1.2rem;
+      --x-skeleton-typography-size-default: 1.4rem;
+      --x-skeleton-typography-size-medium: 1.6rem;
+      --x-skeleton-typography-size-large: 1.9rem;
+      --x-skeleton-typography-size-extra-large: 2.1rem;
+      --x-skeleton-typography-size-extra-extra-large: 2.4rem;
+
+      --x-skeleton-typography-primary-weight-bold: 500;
+
+      --x-skeleton-typography-primary-fonts: Helvetica Neue;
+
+      --x-skeleton-typography-secondary-weight-bold: 500;
+      --x-skeleton-typography-secondary-fonts: Helvetica Neue;
+
+      --x-skeleton-spacing-none: 0;
+      --x-skeleton-spacing-small-100: 1.1rem;
+      --x-skeleton-spacing-small-200: 0.9rem;
+      --x-skeleton-spacing-small-300: 0.7rem;
+      --x-skeleton-spacing-small-400: 0.5rem;
+      --x-skeleton-spacing-small-500: 0.3rem;
+      --x-skeleton-spacing-base: 1.4rem;
+      --x-skeleton-spacing-large-100: 1.7rem;
+      --x-skeleton-spacing-large-200: 2.1rem;
+      --x-skeleton-spacing-large-300: 2.6rem;
+      --x-skeleton-spacing-large-400: 3.2rem;
+      --x-skeleton-spacing-large-500: 3.8rem;
+
+      --x-skeleton-border-radius-none: 0;
+      --x-skeleton-border-radius-base: 5px;
+      --x-skeleton-border-radius-small: 2px;
+      --x-skeleton-border-radius-large: 10px;
+    }
+
+    
+
+    @keyframes SkeletonPulse {
+      50% {
+        opacity: 1;
+      }
+      75% {
+        opacity: 0.5;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    *,
+    :after,
+    :before {
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      width: 100%;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      font-size: 62.5%;
+      font-family: var(--x-skeleton-typography-primary-fonts);
+      line-height: var(--x-skeleton-typography-line-base);
+    }
+
+    body {
+      -webkit-font-smoothing: subpixel-antialiased;
+      overflow-wrap: break-word;
+      overflow-x: hidden;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+    }
+
+    body.Loading {
+      position: fixed;
+    }
+
+    /* TODO: need to take it out of the accessibility tree, too? */
+    body.Loading > .LoadingShell {
+      opacity: 1;
+    }
+  
+    
+    .BlockStack {
+      display: grid;
+    }
+
+    .BlockStack--spacing-small500 {
+      gap: var(--x-skeleton-spacing-small-500);
+    }
+    .BlockStack--spacing-small300 {
+      gap: var(--x-skeleton-spacing-small-300);
+    }
+    .BlockStack--spacing-small100 {
+      gap: var(--x-skeleton-spacing-small-100);
+    }
+    .BlockStack--spacing-base {
+      gap: var(--x-skeleton-spacing-base);
+    }
+    .BlockStack--spacing-large100 {
+      gap: var(--x-skeleton-spacing-large-100);
+    }
+    .BlockStack--spacing-large200 {
+      gap: var(--x-skeleton-spacing-large-200);
+    }
+    .BlockStack--min-inline-size-full {
+      flex: 1;
+    }
+    .BlockStack--inline-alignment-center {
+      justify-items: center;
+    }
+    .BlockStack--inline-alignment-end {
+      justify-items: end;
+    }
+
+    .LoadingHeaderHeading {
+      margin: 0;
+      font-size: var(--x-skeleton-typography-size-extra-large);
+      font-weight: var(--x-skeleton-typography-secondary-weight-bold);
+      font-family: var(--x-skeleton-typography-secondary-fonts);
+      line-height: var(--x-skeleton-typography-line-small);
+    }
+
+    .LoadingHeaderHeading > svg {
+      display: block;
+    }
+
+    .LoadingHeaderHeading-uplift {
+      font-size: var(--x-skeleton-typography-size-large);
+    }
+
+    .LoadingHeaderImage {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .LoadingReferralTitle {
+      font-size: var(--x-skeleton-typography-size-default);
+      font-weight: var(--x-skeleton-typography-secondary-weight-bold);
+      font-family: var(--x-skeleton-typography-secondary-fonts);
+      line-height: var(--x-skeleton-typography-line-small);
+    }
+
+    .LoadingReferralTitleContainer {
+      display: flex;
+      flex-direction: column;
+      gap: var(--x-skeleton-spacing-small-300);
+      justify-content: space-between;
+      padding-block-start: 2px;
+    }
+
+    .InlineStack {
+      display: flex;
+      min-height: 100%;
+      min-width: 100%;
+    }
+    .InlineStack--spacing-base {
+      column-gap: var(--x-skeleton-spacing-base);
+    }
+
+    .InlineStack--spacing-small100 {
+      column-gap: var(--x-skeleton-spacing-small-100);
+    }
+
+    .InlineStack--spacing-large200 {
+      column-gap: var(--x-skeleton-spacing-large-200);
+    }
+    .InlineStack--inline-alignment-spaceBetween {
+      justify-content: space-between;
+    }
+    .InlineStack--block-alignment-start {
+      align-items: start;
+    }
+    .InlineStack--block-alignment-center {
+      align-items: center;
+    }
+
+    .Divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--x-skeleton-default-color-border);
+    }
+
+    .SkeletonButton {
+      background-color: var(--x-skeleton-default-color-textSubdued200);
+      border-radius: var(--x-skeleton-border-radius-base);
+      animation: SkeletonPulse 4000ms ease infinite;
+      width: 100%;
+    }
+    .SkeletonButtonInner {
+      width: 100%;
+      height: 4.8rem;
+    }
+
+    .SkeletonImage {
+      background-color: var(--x-skeleton-default-color-textSubdued200);
+      animation: SkeletonPulse 4000ms ease infinite;
+      width: 100%;
+    }
+    .SkeletonImage--corner-radius-small {
+      border-radius: var(--x-skeleton-border-radius-small);
+    }
+    .SkeletonImage--corner-radius-base {
+      border-radius: var(--x-skeleton-border-radius-base);
+    }
+    .SkeletonImage--corner-radius-large {
+      border-radius: var(--x-skeleton-border-radius-large);
+    }
+    .SkeletonImage--corner-radius-rounded {
+      border-radius: 100%;
+    }
+
+    .SkeletonImageInner {
+      width: 100%;
+      height: 100%;
+    }
+
+    @supports (aspect-ratio: 1) {
+      .SkeletonImage {
+        aspect-ratio: var(--skeleton-thumbnail-aspect-ratio, 1);
+      }
+    }
+    @supports not (aspect-ratio: 1) {
+      .SkeletonImage::before {
+        content: "";
+        height: 0;
+        display: block;
+        padding-bottom: 100%;
+        padding-bottom: calc(100% / var(--skeleton-thumbnail-aspect-ratio, 1));
+      }
+    }
+
+    .SkeletonText {
+      background-color: var(--x-skeleton-default-color-textSubdued200);
+      border-radius: var(--x-skeleton-border-radius-base);
+      animation: SkeletonPulse 4000ms ease infinite;
+      font-family: initial;
+    }
+    .SkeletonTextInner {
+      display: inline-block;
+    }
+    .SkeletonTextInner--inline-size-small {
+      width: 10ch;
+    }
+    .SkeletonTextInner--inline-size-base {
+      width: 20ch;
+    }
+    .SkeletonTextInner--inline-size-large {
+      width: 30ch;
+    }
+    .SkeletonTextInner--inline-size-full {
+      width: 100%;
+    }
+
+    .Icon {
+      fill: none;
+      color: var(--x-skeleton-default-color-border);
+      stroke: currentColor;
+    }
+
+    .Icon path {
+      vector-effect: non-scaling-stroke;
+      stroke-width: 1.4px;
+    }
+
+    .LoadingShellLineItems {
+      display: grid;
+      grid-auto-flow: row;
+      align-items: stretch;
+      gap: var(--x-skeleton-spacing-base);
+    }
+
+    .LoadingShellLine {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: var(--x-skeleton-spacing-base);
+      align-items: center;
+      font-size: var(--x-type-size-base);
+    }
+
+    .LoadingShellLineImageWrapper {
+      width: calc(6.4rem * var(--skeleton-thumbnail-inline-size, 1));
+      height: calc(6.4rem / var(--skeleton-thumbnail-box-size, 1));
+      position: relative;
+      padding: 1px;
+    }
+
+    .LoadingShellImageWrapper--Small {
+      width: 3.2rem;
+      height: 3.2rem;
+      position: relative;
+    }
+
+    .LoadingShellLineImage {
+      width: 6.4rem;
+      height: 6.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      object-fit: contain;
+      background: var(--x-skeleton-default-color-backgroundSubdued);
+    }
+    .LoadingShellLineImage--border-full {
+      border: 1px solid var(--x-skeleton-default-color-border);
+    }
+    .LoadingShellLineImage--corner-radius-small {
+      border-radius: var(--x-skeleton-border-radius-small);
+    }
+    .LoadingShellLineImage--corner-radius-base {
+      border-radius: var(--x-skeleton-border-radius-base);
+    }
+    .LoadingShellLineImage--corner-radius-large {
+      border-radius: var(--x-skeleton-border-radius-large);
+    }
+    .LoadingShellLineImage--corner-radius-rounded {
+      border-radius: 100%;
+    }
+
+    .LoadingShellLineImageIcon {
+      width: 3.3rem;
+      height: 3.3rem;
+    }
+
+    .LoadingShellLineQuantity {
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translate(25%, -50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.2rem;
+      min-height: 2.2rem;
+      padding: 0 var(--x-skeleton-spacing-small-300);
+      border-radius: 1.1rem;
+      background: var(--x-skeleton-default-color-textSubdued);
+      color: var(--x-skeleton-default-color-textContrast);
+      font-size: var(--x-skeleton-typography-size-small);
+      font-weight: 500;
+    }
+
+    .LoadingShellLineQuantity--corner-radius-none {
+      border-radius: 0;
+    }
+
+    .LoadingShellLineContent {
+      display: flex;
+      flex-direction: column;
+      align-self: baseline;
+      min-height: calc(6.4rem / var(--skeleton-thumbnail-box-size, 1));
+      justify-content: center;
+    }
+
+    .LoadingShellLinePrice {
+      display: flex;
+      align-self: baseline;
+    }
+
+    .Text {
+      font-size: var(--x-skeleton-typography-size-default);
+    }
+    .Text--size-small {
+      font-size: var(--x-skeleton-typography-size-small);
+    }
+    .Text--size-large {
+      font-size: var(--x-skeleton-typography-size-large);
+    }
+    .Text--size-extraExtraLarge {
+      font-size: var(--x-skeleton-typography-size-extra-extra-large);
+    }
+    .Text--appearance-subdued {
+      color: var(--x-skeleton-default-color-textSubdued);
+    }
+
+    .SkeletonExpressCheckoutButtons {
+      display: grid;
+      gap: var(--x-skeleton-spacing-small-100);
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .SkeletonExpressCheckoutButtons > *:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .SkeletonExpressCheckout {
+      margin-bottom: var(--x-skeleton-spacing-large-500);
+    }
+
+    .ExpressCheckoutDivider {
+      display: flex;
+      place-items: center;
+      height: 21px;
+      padding-top: calc(var(--x-skeleton-spacing-large-500) - 1px);
+    }
+
+    @media screen and (min-width: 1000px) {
+      .SkeletonExpressCheckoutButtons {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .SkeletonExpressCheckoutButtons > *:first-child {
+        grid-column: auto;
+      }
+
+      .SkeletonExpressCheckoutButtons {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .SkeletonExpressCheckoutButtons > *:first-child {
+        grid-column: auto;
+      }
+    }
+
+    .LoadingShellHeader--banner {
+      background-position: 50% 50%;
+      background-size: cover;
+      background-image: var(--x-skeleton-banner-image);
+      --x-skeleton-header-shop-name-color: #fff;
+      --x-skeleton-cart-color: #fff;
+    }
+
+
+    .VisuallyHidden {
+      border-width: 0;
+      clip: rect(0, 0, 0, 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+      white-space: nowrap;
+    }
+
+    .FadeIn {
+      opacity: 0;
+      animation: 400ms FadeIn 150ms forwards;
+    }
+
+    @keyframes FadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  
+    
+    
+        .colorSchemeScheme1 {
+          --x-skeleton-default-color-background: var(--x-skeleton-color-schemes-scheme1-base-background, var(--x-skeleton-color-global-background));
+          --x-skeleton-default-color-accent: var(--x-skeleton-color-schemes-scheme1-base-accent, var(--x-skeleton-color-global-accent));
+          --x-skeleton-default-color-backgroundSubdued: var(--x-skeleton-color-schemes-scheme1-base-backgroundSubdued, var(--x-skeleton-color-global-backgroundSubdued));
+          --x-skeleton-default-color-border: var(--x-skeleton-color-schemes-scheme1-base-border, var(--x-skeleton-color-global-border));
+          --x-skeleton-default-color-text: var(--x-skeleton-color-schemes-scheme1-base-text, var(--x-skeleton-color-global-text));
+          --x-skeleton-default-color-textContrast: var(--x-skeleton-color-schemes-scheme2-base-textContrast, var(--x-skeleton-color-global-textContrast));
+          --x-skeleton-default-color-textSubdued: var(--x-skeleton-color-schemes-scheme1-base-textSubdued, var(--x-skeleton-color-global-textSubdued));
+          --x-skeleton-default-color-textSubdued200: var(--x-skeleton-color-schemes-scheme1-base-textSubdued200, var(--x-skeleton-color-global-textSubdued200));
+        }
+      
+        .colorSchemeScheme2 {
+          --x-skeleton-default-color-background: var(--x-skeleton-color-schemes-scheme2-base-background, var(--x-skeleton-color-global-background));
+          --x-skeleton-default-color-accent: var(--x-skeleton-color-schemes-scheme2-base-accent, var(--x-skeleton-color-global-accent));
+          --x-skeleton-default-color-backgroundSubdued: var(--x-skeleton-color-schemes-scheme2-base-backgroundSubdued, var(--x-skeleton-color-global-backgroundSubdued));
+          --x-skeleton-default-color-border: var(--x-skeleton-color-schemes-scheme2-base-border, var(--x-skeleton-color-global-border));
+          --x-skeleton-default-color-text: var(--x-skeleton-color-schemes-scheme2-base-text, var(--x-skeleton-color-global-text));
+          --x-skeleton-default-color-textContrast: var(--x-skeleton-color-schemes-scheme2-base-textContrast, var(--x-skeleton-color-global-textContrast));
+          --x-skeleton-default-color-textSubdued: var(--x-skeleton-color-schemes-scheme2-base-textSubdued, var(--x-skeleton-color-global-textSubdued));
+          --x-skeleton-default-color-textSubdued200: var(--x-skeleton-color-schemes-scheme2-base-textSubdued200, var(--x-skeleton-color-global-textSubdued200));
+        }
+      
+        .colorSchemeScheme3 {
+          --x-skeleton-default-color-background: var(--x-skeleton-color-schemes-scheme3-base-background, var(--x-skeleton-color-global-background));
+          --x-skeleton-default-color-accent: var(--x-skeleton-color-schemes-scheme3-base-accent, var(--x-skeleton-color-global-accent));
+          --x-skeleton-default-color-backgroundSubdued: var(--x-skeleton-color-schemes-scheme3-base-backgroundSubdued, var(--x-skeleton-color-global-backgroundSubdued));
+          --x-skeleton-default-color-border: var(--x-skeleton-color-schemes-scheme3-base-border, var(--x-skeleton-color-global-border));
+          --x-skeleton-default-color-text: var(--x-skeleton-color-schemes-scheme3-base-text, var(--x-skeleton-color-global-text));
+          --x-skeleton-default-color-textContrast: var(--x-skeleton-color-schemes-scheme2-base-textContrast, var(--x-skeleton-color-global-textContrast));
+          --x-skeleton-default-color-textSubdued: var(--x-skeleton-color-schemes-scheme3-base-textSubdued, var(--x-skeleton-color-global-textSubdued));
+          --x-skeleton-default-color-textSubdued200: var(--x-skeleton-color-schemes-scheme3-base-textSubdued200, var(--x-skeleton-color-global-textSubdued200));
+        }
+      
+        .colorSchemeScheme4 {
+          --x-skeleton-default-color-background: var(--x-skeleton-color-schemes-scheme4-base-background, var(--x-skeleton-color-global-background));
+          --x-skeleton-default-color-accent: var(--x-skeleton-color-schemes-scheme4-base-accent, var(--x-skeleton-color-global-accent));
+          --x-skeleton-default-color-backgroundSubdued: var(--x-skeleton-color-schemes-scheme4-base-backgroundSubdued, var(--x-skeleton-color-global-backgroundSubdued));
+          --x-skeleton-default-color-border: var(--x-skeleton-color-schemes-scheme4-base-border, var(--x-skeleton-color-global-border));
+          --x-skeleton-default-color-text: var(--x-skeleton-color-schemes-scheme4-base-text, var(--x-skeleton-color-global-text));
+          --x-skeleton-default-color-textContrast: var(--x-skeleton-color-schemes-scheme2-base-textContrast, var(--x-skeleton-color-global-textContrast));
+          --x-skeleton-default-color-textSubdued: var(--x-skeleton-color-schemes-scheme4-base-textSubdued, var(--x-skeleton-color-global-textSubdued));
+          --x-skeleton-default-color-textSubdued200: var(--x-skeleton-color-schemes-scheme4-base-textSubdued200, var(--x-skeleton-color-global-textSubdued200));
+        }
+      
+        .colorSchemeScheme5 {
+          --x-skeleton-default-color-background: var(--x-skeleton-color-schemes-scheme5-base-background, var(--x-skeleton-color-global-background));
+          --x-skeleton-default-color-accent: var(--x-skeleton-color-schemes-scheme5-base-accent, var(--x-skeleton-color-global-accent));
+          --x-skeleton-default-color-backgroundSubdued: var(--x-skeleton-color-schemes-scheme5-base-backgroundSubdued, var(--x-skeleton-color-global-backgroundSubdued));
+          --x-skeleton-default-color-border: var(--x-skeleton-color-schemes-scheme5-base-border, var(--x-skeleton-color-global-border));
+          --x-skeleton-default-color-text: var(--x-skeleton-color-schemes-scheme5-base-text, var(--x-skeleton-color-global-text));
+          --x-skeleton-default-color-textContrast: var(--x-skeleton-color-schemes-scheme2-base-textContrast, var(--x-skeleton-color-global-textContrast));
+          --x-skeleton-default-color-textSubdued: var(--x-skeleton-color-schemes-scheme5-base-textSubdued, var(--x-skeleton-color-global-textSubdued));
+          --x-skeleton-default-color-textSubdued200: var(--x-skeleton-color-schemes-scheme5-base-textSubdued200, var(--x-skeleton-color-global-textSubdued200));
+        }
+      
+        .colorSchemeScheme6 {
+          --x-skeleton-default-color-background: var(--x-skeleton-color-schemes-scheme6-base-background, var(--x-skeleton-color-global-background));
+          --x-skeleton-default-color-accent: var(--x-skeleton-color-schemes-scheme6-base-accent, var(--x-skeleton-color-global-accent));
+          --x-skeleton-default-color-backgroundSubdued: var(--x-skeleton-color-schemes-scheme6-base-backgroundSubdued, var(--x-skeleton-color-global-backgroundSubdued));
+          --x-skeleton-default-color-border: var(--x-skeleton-color-schemes-scheme6-base-border, var(--x-skeleton-color-global-border));
+          --x-skeleton-default-color-text: var(--x-skeleton-color-schemes-scheme6-base-text, var(--x-skeleton-color-global-text));
+          --x-skeleton-default-color-textContrast: var(--x-skeleton-color-schemes-scheme2-base-textContrast, var(--x-skeleton-color-global-textContrast));
+          --x-skeleton-default-color-textSubdued: var(--x-skeleton-color-schemes-scheme6-base-textSubdued, var(--x-skeleton-color-global-textSubdued));
+          --x-skeleton-default-color-textSubdued200: var(--x-skeleton-color-schemes-scheme6-base-textSubdued200, var(--x-skeleton-color-global-textSubdued200));
+        }
+      
+        .colorSchemeScheme7 {
+          --x-skeleton-default-color-background: var(--x-skeleton-color-schemes-scheme7-base-background, var(--x-skeleton-color-global-background));
+          --x-skeleton-default-color-accent: var(--x-skeleton-color-schemes-scheme7-base-accent, var(--x-skeleton-color-global-accent));
+          --x-skeleton-default-color-backgroundSubdued: var(--x-skeleton-color-schemes-scheme7-base-backgroundSubdued, var(--x-skeleton-color-global-backgroundSubdued));
+          --x-skeleton-default-color-border: var(--x-skeleton-color-schemes-scheme7-base-border, var(--x-skeleton-color-global-border));
+          --x-skeleton-default-color-text: var(--x-skeleton-color-schemes-scheme7-base-text, var(--x-skeleton-color-global-text));
+          --x-skeleton-default-color-textContrast: var(--x-skeleton-color-schemes-scheme2-base-textContrast, var(--x-skeleton-color-global-textContrast));
+          --x-skeleton-default-color-textSubdued: var(--x-skeleton-color-schemes-scheme7-base-textSubdued, var(--x-skeleton-color-global-textSubdued));
+          --x-skeleton-default-color-textSubdued200: var(--x-skeleton-color-schemes-scheme7-base-textSubdued200, var(--x-skeleton-color-global-textSubdued200));
+        }
+      
+        .colorSchemeScheme8 {
+          --x-skeleton-default-color-background: var(--x-skeleton-color-schemes-scheme8-base-background, var(--x-skeleton-color-global-background));
+          --x-skeleton-default-color-accent: var(--x-skeleton-color-schemes-scheme8-base-accent, var(--x-skeleton-color-global-accent));
+          --x-skeleton-default-color-backgroundSubdued: var(--x-skeleton-color-schemes-scheme8-base-backgroundSubdued, var(--x-skeleton-color-global-backgroundSubdued));
+          --x-skeleton-default-color-border: var(--x-skeleton-color-schemes-scheme8-base-border, var(--x-skeleton-color-global-border));
+          --x-skeleton-default-color-text: var(--x-skeleton-color-schemes-scheme8-base-text, var(--x-skeleton-color-global-text));
+          --x-skeleton-default-color-textContrast: var(--x-skeleton-color-schemes-scheme2-base-textContrast, var(--x-skeleton-color-global-textContrast));
+          --x-skeleton-default-color-textSubdued: var(--x-skeleton-color-schemes-scheme8-base-textSubdued, var(--x-skeleton-color-global-textSubdued));
+          --x-skeleton-default-color-textSubdued200: var(--x-skeleton-color-schemes-scheme8-base-textSubdued200, var(--x-skeleton-color-global-textSubdued200));
+        }
+      
+
+    .backgroundColorBase {
+      background-color: var(--x-skeleton-default-color-background);
+      color: var(--x-skeleton-default-color-text);
+    }
+
+    .backgroundColorSubdued {
+      background-color: var(--x-skeleton-default-color-backgroundSubdued);
+      color: var(--x-skeleton-default-color-text);
+    }
+  
+
+    .LoadingShell {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      will-change: opacity;
+
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas:
+        'header'
+        'disclosure'
+        'shell-content';
+      background-image: var(--x-skeleton-shell-background-image);
+
+      --x-skeleton-shell-inline-size: 58rem;
+      --x-skeleton-shell-background-image: var(--skeleton-config-shell-background-image);
+
+      --x-skeleton-shell-header-inline-size: var(--x-skeleton-shell-inline-size);
+
+      --x-skeleton-shell-header-padding: var(--skeleton-config-header-padding, var(--x-skeleton-spacing-large-200));
+
+      --x-skeleton-shell-header-background-image: var(--skeleton-config-header-background-image);
+
+      --x-skeleton-shell-disclosure-inline-size: var(--x-skeleton-shell-inline-size);
+      --x-skeleton-shell-disclosure-padding: var(--x-skeleton-spacing-large-100) var(--x-skeleton-spacing-large-200);
+      --x-skeleton-shell-disclosure-display: block;
+
+      --x-skeleton-shell-main-inline-size: var(--x-skeleton-shell-inline-size);
+      --x-skeleton-shell-main-justify-content: center;
+      --x-skeleton-shell-main-padding: var(--x-skeleton-spacing-large-200);
+      --x-skeleton-shell-main-border: none;
+
+      --x-skeleton-shell-order-summary-display: none;
+      --x-skeleton-shell-order-summary-background-image: var(--skeleton-config-order-summary-background-image);
+
+      --x-skeleton-box-shadow-extra-small:
+        0 1px 1.75px 0 rgba(0, 0, 0, 0.12),
+        0 -0.5px 1.5px 0 rgba(0, 0, 0, 0.09),
+        0 3px 4px 0 rgba(0, 0, 0, 0.03);
+
+      --x-skeleton-box-shadow-small:
+        0 1px 2px -0.5px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.08),
+        0 3px 6px -1.5px rgba(0, 0, 0, 0.08),
+        0 -0.5px 1.5px 0 rgba(0, 0, 0, 0.09);
+
+      @media screen and (min-width: 1000px) {
+        --x-skeleton-shell-main-inline-size: 58rem;
+        --x-skeleton-shell-order-summary-inline-size: 48rem;
+        --x-skeleton-shell-section-columns-offset: 5rem;
+
+        --x-skeleton-shell-content-display: grid;
+        --x-skeleton-shell-content-template-areas: 'main order-summary';
+
+        --x-skeleton-shell-content-template-columns: minmax(
+            min-content, calc(50% + var(--x-skeleton-shell-section-columns-offset))
+          )
+          1fr;
+
+        --x-skeleton-shell-inline-size: 106rem;
+        --x-skeleton-shell-header-padding: var(--skeleton-config-header-padding, 0);
+
+        --x-skeleton-shell-disclosure-display: none;
+
+        --x-skeleton-shell-main-justify-content: flex-end;
+        --x-skeleton-shell-main-padding: var(--x-skeleton-spacing-large-500);
+        --x-skeleton-shell-main-border: 1px solid var(--x-skeleton-default-color-border);
+
+        --x-skeleton-shell-order-summary-display: block;
+        --x-skeleton-shell-order-summary-padding: var(--x-skeleton-spacing-large-500);
+      }
+    }
+
+    @supports (width: min(0px, 100px)) {
+      /* mobile header padding is clamped at large-200 like Sections */
+      @media screen and (max-width: 999px) {
+        .LoadingShell {
+          --x-skeleton-shell-header-padding: min(
+            var(--skeleton-config-header-padding, var(--x-skeleton-spacing-large-200)),
+            var(--x-skeleton-spacing-large-200)
+          );
+        }
+      }
+    }
+
+    @media screen and (min-width: 1000px) {
+      .LoadingShell.LoadingShellConfig-Header-positionStart {
+        --x-skeleton-shell-header-padding: var(--skeleton-config-header-padding, var(--x-skeleton-spacing-large-200) var(--x-skeleton-spacing-large-500));
+      }
+    }
+
+    .LoadingShellHeader {
+      grid-area: header;
+    }
+
+    .LoadingShellHeaderContent {
+      padding: var(--x-skeleton-shell-header-padding);
+      width: 100%;
+      max-width: var(--x-skeleton-shell-header-inline-size);
+    }
+
+    @media screen and (min-width: 1000px) {
+      .LoadingShell:not(.LoadingShellConfig-Header-positionStart) .LoadingShellHeader-positionStart {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 999px) {
+      .LoadingShellConfig-Header-positionInline .LoadingShellHeader-positionInline,
+      .LoadingShellConfig-Header-positionInlineSecondary .LoadingShellHeader-positionInlineSecondary {
+        display: none;
+      }
+
+      .LoadingShellConfig-Header-positionInlineSecondary .LoadingShellHeader-positionStart {
+        background-image: var(
+          --x-skeleton-shell-header-background-image,
+          var(--x-skeleton-shell-order-summary-background-image)
+        );
+      }
+    }
+
+    .LoadingShellHeader-positionStart {
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid var(--x-skeleton-default-color-border);
+      background-image: var(--x-skeleton-shell-header-background-image);
+      background-position: 50% 50%;
+      background-size: cover;
+    }
+
+    .LoadingShellHeader-uplift {
+      z-index: 1;
+      border-bottom: none;
+      box-shadow: var(--x-skeleton-box-shadow-small);
+    }
+
+    .LoadingShellHeader-positionStart.LoadingShellHeader-hasBackgroundImage {
+      --header-shop-name-color: #ffffff;
+      --x-skeleton-default-color-accent: #ffffff;
+    }
+
+    .LoadingShellBuyerJourneyContent {
+      width: 100%;
+      width: var(--x-skeleton-shell-buyer-journey-inline-size);
+      padding: var(--x-skeleton-shell-buyer-journey-padding);
+    }
+
+    .LoadingShellDisclosure {
+      grid-area: disclosure;
+      display: var(--x-skeleton-shell-disclosure-display);
+      border-bottom: 1px solid var(--x-skeleton-default-color-border);
+    }
+
+    .LoadingShellDisclosure-uplift {
+      border-bottom: none;
+      box-shadow: var(--x-skeleton-box-shadow-extra-small);
+    }
+
+    .LoadingShellDisclosureButton {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .LoadingShellDisclosureButton {
+      text-align: start;
+      background: var(--x-skeleton-default-color-backgroundSubdued);
+      color: var(--x-skeleton-default-color-accent);
+      position: relative;
+      z-index: 2;
+    }
+
+    .LoadingShellDisclosureButtonContent {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--x-skeleton-spacing-small-200);
+      align-content: center;
+      align-items: center;
+    }
+
+    .LoadingShellDisclosureButtonContent {
+      padding: var(--x-skeleton-shell-disclosure-padding);
+      width: 100%;
+      max-width: var(--x-skeleton-shell-disclosure-inline-size);
+    }
+
+    .LoadingShellContent {
+      grid-area: shell-content;
+      display: var(--x-skeleton-shell-content-display);
+      grid-template-areas: var(--x-skeleton-shell-content-template-areas);
+      grid-template-columns: var(--x-skeleton-shell-content-template-columns);
+    }
+
+    .LoadingShellMain {
+      grid-area: main;
+      display: flex;
+      justify-content: var(--x-skeleton-shell-main-justify-content);
+      height: 100%;
+    }
+
+    .LoadingShellMain .LoadingShellMainContent {
+      height: 100%;
+      width: 100%;
+      max-width: var(--x-skeleton-shell-main-inline-size);
+      padding: var(--x-skeleton-shell-main-padding);
+      border-inline-end: var(--x-skeleton-shell-main-border);
+
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'header'
+        'buyer-journey'
+        'main-content-primary';
+    }
+
+    .LoadingShellMainContentPrimary {
+      grid-area: main-content-primary;
+    }
+
+
+    .LoadingShellMainContent .LoadingShellHeader {
+      margin-bottom: var(--x-skeleton-spacing-large-100);
+    }
+    .LoadingShellMainContent .LoadingShellBuyerJourney {
+      margin-bottom: var(--x-skeleton-spacing-large-300);
+    }
+
+    .LoadingShellOrderSummary {
+      display: var(--x-skeleton-shell-order-summary-display);
+      grid-area: order-summary;
+    }
+
+    .LoadingShellOrderSummary .LoadingShellOrderSummaryContent {
+      position: sticky;
+      padding: var(--x-skeleton-shell-order-summary-padding);
+      width: 100%;
+      max-width: var(--x-skeleton-shell-order-summary-inline-size);
+      top: 0;
+      right: auto;
+      bottom: 0;
+      left: auto;
+    }
+
+    .LoadingShellOrderSummaryContent .LoadingShellHeader {
+      margin-bottom: var(--x-skeleton-spacing-large-200);
+    }
+
+    /* Header */
+    .LoadingHeader {
+      display: flex;
+      width: 100%;
+    }
+
+    .LoadingHeader-alignmentStart {
+      justify-content: flex-start;
+    }
+
+    .LoadingHeader-alignmentCenter {
+      justify-content: center;
+    }
+
+    .LoadingHeader-alignmentEnd {
+      justify-content: flex-end;
+    }
+
+    .LoadingShell-variantOneStepCheckout .LoadingHeader-alignmentCenter .LoadingHeaderHeading {
+      display: flex;
+      justify-content: center;
+    }
+    .LoadingShell-variantOneStepCheckout .LoadingHeader-alignmentEnd .LoadingHeaderHeading {
+      display: flex;
+      justify-content: flex-end;
+    }
+  </style><div class="LoadingShell LoadingShellConfig-Header-positionStart LoadingShell-variantOneStepCheckout colorSchemeScheme1 backgroundColorBase"><header class="LoadingShellHeader LoadingShellHeader-containerFill LoadingShellHeader-positionStart"><div class="LoadingShellHeaderContent"><div class="LoadingHeader LoadingHeader-alignmentCenter"><h1 class="LoadingHeaderHeading"><img alt="BOLD3 Coffee" src="https://cdn.shopify.com/s/files/1/1657/8911/files/Bold_3_Coffee_w_white_trim_Logo_x320.png?v=1613159676" width="83" height="79.88450433108758" class="LoadingHeaderImage"/></h1></div></div></header><div class="LoadingShellDisclosure ShopPay"><div class="LoadingShellDisclosureButton LoadingShellDisclosureButton-containerFill"><span class="LoadingShellDisclosureButtonContent FadeIn"><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-base"><span></span></span></span></span><span><span class="Text Text--size-large"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span></span></span></div></div><div class="LoadingShellContent LoadingShellContent-containerFill"><div class="LoadingShellMain"><div class="LoadingShellMainContent"><main class="LoadingShellMainContentPrimary FadeIn"><div class="SkeletonExpressCheckout"><div class="BlockStack BlockStack--spacing-base"><div class="BlockStack BlockStack--inline-alignment-center BlockStack--spacing-base"><span class="Text"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-base"><span></span></span></span></span></div><div class="SkeletonExpressCheckoutButtons"><div class="SkeletonButton"><div class="SkeletonButtonInner"></div></div><div class="SkeletonButton"><div class="SkeletonButtonInner"></div></div><div class="SkeletonButton"><div class="SkeletonButtonInner"></div></div></div></div><div class="ExpressCheckoutDivider"><div class="Divider"></div></div></div><div class="BlockStack BlockStack--spacing-large200"><div class="BlockStack BlockStack--spacing-base"><span class="Text Text--size-large"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span><div class="BlockStack BlockStack--spacing-small300"><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-full"><span></span></span></span></span><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-full"><span></span></span></span></span></div></div><div class="Divider"></div><div class="BlockStack BlockStack--spacing-base"><span class="Text Text--size-large"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span><div class="BlockStack BlockStack--spacing-small300"><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-full"><span></span></span></span></span><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-full"><span></span></span></span></span></div></div></div></main></div></div><div class="LoadingShellOrderSummary colorSchemeScheme2 backgroundColorBase"><div class="LoadingShellOrderSummaryContent"><aside class="LoadingShellOrderSummaryContentPrimary FadeIn"><div class="BlockStack BlockStack--spacing-large200"><h2 class="VisuallyHidden"></h2><div class="LoadingShellLineItems"><div class="LoadingShellLine"><div class="LoadingShellLineImageWrapper"><div class="SkeletonImage SkeletonImage--corner-radius-base"><span class="SkeletonImageInner"></span></div></div><div class="LoadingShellLineContent"><div class="BlockStack BlockStack--spacing-small500"><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-base"><span></span></span></span></span><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span></div></div><div class="LoadingShellLinePrice"><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span></div></div></div><div class="BlockStack BlockStack--spacing-small100"><div class="InlineStack InlineStack--spacing-base InlineStack--block-alignment-start InlineStack--inline-alignment-spaceBetween"><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span></div><div class="InlineStack InlineStack--spacing-base InlineStack--block-alignment-start InlineStack--inline-alignment-spaceBetween"><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span></div><div class="InlineStack InlineStack--spacing-base InlineStack--block-alignment-start InlineStack--inline-alignment-spaceBetween"><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span><span class="Text Text--size-small"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span></div><div class="InlineStack InlineStack--spacing-base InlineStack--block-alignment-start InlineStack--inline-alignment-spaceBetween"><span class="Text Text--size-large"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span><span class="Text Text--size-large"><span class="SkeletonText"><span class="SkeletonTextInner SkeletonTextInner--inline-size-small"><span></span></span></span></span></div></div></div></aside></div></div></div></div><script type="systemjs-importmap">{
+  "integrity": {
+    "/cdn/shopifycloud/checkout-web/assets/c1/shop-js-shopjs-locales-legacy.qsHp4v5g.js": "sha384-sNOuwy6FbU5sbvEMhheFA4Ujil+sWve4SdPuXfG7Yd7fzOthPxUNvHX+J5g8C8wN",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-SubscriptionGroupLine-legacy.C3fajV1L.js": "sha384-OJ7kaxmMT0HfM6U4YV+co68m9+jU5l1NdfVKb02hDrQa9RFBaPB9zuHUNAq3qdJv",
+    "/cdn/shopifycloud/checkout-web/assets/c1/vendor-legacy.C9CKPQLH.js": "sha384-jpY+87/gsNnh1fpC3rF05jdau0dPz36rRwaim79Ti11vKJ7F4X9iYtCo8/8YY35n",
+    "/cdn/shopifycloud/checkout-web/assets/c1/app-legacy.BGG7-sxV.js": "sha384-H7WPqrlXbNoOpvZZtVM7DngI6WMUMe6c2rPoOdEPuszN/wnJ6eQSMX+l0nlxFg1r",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ShipmentLine-legacy.CJPduD36.js": "sha384-TvJyEe/dal1Dcxi2wtugPk+BVHhS6827NcwNBYww1ELpZoLRKUJnMM6BYMQZN0y9",
+    "/cdn/shopifycloud/checkout-web/assets/c1/DutyOptions-legacy.BpH6dWwS.js": "sha384-GWC+L3OaDTf+a+KfPLzcWaAN99jWurgkQ8TDU2Qb7USjKmM+eYswHTAqHKkwdmPL",
+    "/cdn/shopifycloud/checkout-web/assets/c1/MerchandiseModal-legacy.BIeEY602.js": "sha384-gF20KU23kGZ6olMVPiCMnxcY9+SVwsWDEnC6XWHohz+J4RrgQKvlf/RHGYrFPOKa",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-PhoneNumberFormatter-legacy.BA470uGk.js": "sha384-Y6exVdJ/zdBuJfZ/lRZFse9bGIwP7nr7wt5VttHnFhbC13drFl4zceM9Mbd48FKX",
+    "/cdn/shopifycloud/checkout-web/assets/c1/getCountryCallingCode-legacy.CPwPkxys.js": "sha384-p1DB0pSOcoLyVzI/CEYn8CeAGNoQ6EVCwjInAn+hXxfBCDp3YO+db8P1kb3RqAVK",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-Review-legacy.BQmB3b4a.js": "sha384-vLPjoHR+uhOmWsO+ZHcBF3csr8VZBBaBYieHMQOrLngZ9oz4Kbmf4Iq61CkyyE7u",
+    "/cdn/shopifycloud/checkout-web/assets/c1/Page-legacy.QBKcT3X3.js": "sha384-phgC/fKZhSoGtPBeHGAdXDe1kt+N/LysOui0ubNA6fJfa9ZORUYxS2lejRIV34tV",
+    "/cdn/shopifycloud/checkout-web/assets/c1/SeparatePaymentsNotice-legacy.D2RmEo32.js": "sha384-aI7djSJDR883ZefOAGxdVdVfnhNZ0pMVzTO9m4RaxugvjHgDrL/AXhZZxlJczFNg",
+    "/cdn/shopifycloud/checkout-web/assets/c1/PaymentButtons-legacy.CWzzVGY3.js": "sha384-HCmVbr0U9sMGSQmWAbo7i2gYTT5ZxTBCSTuE4nzNbty9Z6uZl3IoYAwnK8tENULv",
+    "/cdn/shopifycloud/checkout-web/assets/c1/OffsitePaymentFailed-legacy.ByE-tOv_.js": "sha384-eX69KYFGMisqi8CoTkebQCvgbIKZNg+Ow2ShlhoyVz9I9+tkOz+zx9M5GaqUoJ4L",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-PayPalExpressPaymentMethod-legacy.aMVeF7GN.js": "sha384-RaxXUoV1eUPuqKUBOFNAUn6kaUcDVot8T1GFLaLR/I1Q0ZvzO3EKKizp/C8wxrpD",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-ShippingGroupsSummary-legacy.CIiDDLZm.js": "sha384-RArgX0Q1+awLYoOOL3uX3bTflcuGZv3wC8b2QIsddUJhuJM8ee5uaeeLhdrlzAb6",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-Captcha-legacy.CgeccKWL.js": "sha384-JBnLWjOtf52dIJ+yrXK13PzkV8BhDsthhf2p0nQWlmswjPcGJXPeJZcHGnSYlSvW",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ShopPayCaptcha-legacy.BxuOZ5ts.js": "sha384-jR2D8tI+DKCVgiY0EffFsXstA86JaWxG5my/Ovr6FxwgT7OwOpZ5sHv0NbDiyg2E",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-StockProblemsModal-legacy.ChcitS21.js": "sha384-Mm3BBMFZqqeaaLpJCxbadFI8rD50b5BmU0DHAwQmi8O+5sKs8wT/pmE63H0OuNPt",
+    "/cdn/shopifycloud/checkout-web/assets/c1/StockProblemsLineItemList-legacy.BYmexfP7.js": "sha384-SaNjFYOCsmQ2N3gjuQv59LBWHgPZmejwEwF5kEusLbgrmqAZe/QrYXJlgx6QjjxA",
+    "/cdn/shopifycloud/checkout-web/assets/c1/EditorBridge-legacy.dC_O3Y1C.js": "sha384-jWpstPc67PZTzbb3qzHhScHA53Dl5GFn5uL2qq7zg9Io79Ye3YmqhbaeDmgXDpOa",
+    "/cdn/shopifycloud/checkout-web/assets/c1/VaultedDeliveryAddress-legacy.DAGjix-K.js": "sha384-OpFL9YXwZ4ZobMq00HHJhoDvQJJVbjAMhIbfZHLQ3ntWEBJqFSgujmxTJpxSnK4P",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ActiveInspector-legacy.LQhgG_me.js": "sha384-mugi53ZjjFBuCLw+dcX89JoMPttVqBe+UUJ+TlbNYHkUXmmH7k7gER/bKYc/pIXo",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-Shipping-legacy.CzpSkKnJ.js": "sha384-AmjMSCkYTs6OFd+wOPhtedjrERdtgJxYfXf8NftWeGLrNoHNWtKrVRalfiuQoc4x",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ShipmentBreakdown-legacy.CnXn1ggJ.js": "sha384-/TtFPuSCuEwPb///hn+UfB0YBUMzh2p5obtLmg2Y5288iR3307CbEgR0lwOKgcRL",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-Throttle-legacy.B-jQAJyg.js": "sha384-LdG8ZtjwdntBTjJBTUHXJt8EyDdl++uE2eFW5JWu0Lm7K/BH/3/K1BP5RL4cfYm/",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-ProfilePreviewBar-legacy.BBRrHQYT.js": "sha384-Gx6Lt17SJbs7nuKoIyBu70lBU0qds40Z9EJlUNrSmTBKKHSRjlVpmvgrkg4Rio0k",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-StockProblems-legacy.li5Z3mJP.js": "sha384-jaE6JR3GGpLj9FhxBnVcYiHMt+FRR7NHTJDiszmdE+6POYXwc8fyNR/FzNnMUDfA",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-AutocompleteField-legacy.BPqcGvby.js": "sha384-K4JMhdLowBIO26ZDllXf3HRGssTaO3BnNyQrwG8gM1Orp0M3up671S5kloVoyaIX",
+    "/cdn/shopifycloud/checkout-web/assets/c1/hooks-legacy.DssGu3oH.js": "sha384-kyYE4tFGQWtMpkfACs6/9eqP/40gX3y0KTI5660+Rkuvg0ODuAbZQ8c68kgbkj6B",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-Processing-legacy.B0TZPj7S.js": "sha384-RgaBD+JpIqH00BsG0J/1X7JRwN/qDtLWzjU8EfgvU6KPYYq+0EjkKNCFMjWe3Itv",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-RuntimeExtension-legacy.DuBa33ZN.js": "sha384-07MAFxiVLrJ/dCp27eBzIm15sSjNCGDunsrHcfOtfPxptALCKPm7y+B6g75Ve45u",
+    "/cdn/shopifycloud/checkout-web/assets/c1/AnnouncementRuntimeExtensions-legacy.BKp60smu.js": "sha384-crEtxhYNCE9VfVrYbMGuM/WVZ9IFJsjpKZCl0ar8NDqUV/trXtv3VPzOIDfFiZON",
+    "/cdn/shopifycloud/checkout-web/assets/c1/rendering-extension-targets-legacy.DuGSG-_e.js": "sha384-uSrYa0umVTR+qWmemGf1mejqeRY2fxeQtUXUx8fNeQie+FFTX/x7dpTJy/kfgp1k",
+    "/cdn/shopifycloud/checkout-web/assets/c1/v4-legacy.On_frbc2.js": "sha384-TCdm6t9ewB52TdI6karf6smHzDK5imERZPCV7z2bwbVUR3W+ZcY/9CvmFrbNEcCH",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-DeliveryMacros-legacy.xoi9TI-G.js": "sha384-Za0ofEbaZLVL3KHci1Ygjl3pnMAUkBm2nkR8y2rdPruYU+QHc3vUQXgn3xKJqRWp",
+    "/cdn/shopifycloud/checkout-web/assets/c1/BuyWithPrimeOrderTrackingButton-legacy.Ch1PVlOX.js": "sha384-eWfykwpDSRXqipM7sDz4rKprtyftIkDMCtFONw2PR1E17rQZ3mS2TiZ3UGTmRqmB",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-OnePageReview-legacy.tZy0xi7i.js": "sha384-Lzg23KcpHdlMoJsTWOi2dhRmMQxsP9N+sVGHN3M7428+86RlyDyyFvqtLTdG9R6x",
+    "/cdn/shopifycloud/checkout-web/assets/c1/OrderEditVaultedDelivery-legacy.C7kRlN6C.js": "sha384-W7izHzj7HxfKbjNnqTJKwzFNOl0+4qN1UGPDDekuTw+kgqtbOWW32iSQKHf1OCBu",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ShopPayOptInDisclaimer-legacy.r7uHsV1L.js": "sha384-vQohdJuJB+9tR62niHWojhm9XNnXgiUNsn/7BwQT2zn5czv3kZYkibkXV3/t4hkk",
+    "/cdn/shopifycloud/checkout-web/assets/c1/RememberMeDescriptionText-legacy.CYhn5AXI.js": "sha384-lgyYRQpgzLG+KEiMEx5vfh/9SqEK1Zncxv95h2NUeBP6NlgvRzKA4tiy2bmXFfgl",
+    "/cdn/shopifycloud/checkout-web/assets/c1/MobileOrderSummary-legacy.DhUFEq1w.js": "sha384-vezqQ3Ywz83UN+nqKy+vm+wx3bjRXRAOrPClAPfYY7fja7DaDZGzNKlMc6W95LVi",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-Payment-legacy.CZCeRGzF.js": "sha384-4VwM7mq9K3L7DtsoQqNm/jY3T6+fA1hkO/V4/vW8JOYMBijf+DBgCzHBJnBXGr/S",
+    "/cdn/shopifycloud/checkout-web/assets/c1/AddDiscountButton-legacy.CNFKmJ_L.js": "sha384-a1rKWFrFhj6UoAkBzO8yEHQlncvIsf/Q+ULVMbAYeG7riBVFe4wdA8oj2sZeEWw7",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-ShopPayLoginLoader-legacy.ZAs-kVDH.js": "sha384-67JEfnJMMJow3Qsl4G39wv9QB55H2sc140kPrOppJNyF6ejRlWm2/Z2XWxs+lexl",
+    "/cdn/shopifycloud/checkout-web/assets/c1/useShopPayParts-legacy.OR0xc4Do.js": "sha384-eqsyhRqpN/UBubiBSVNpHlOiVmAva44eAVoom3SpYbaGBzu3dtPHCMPecSK96sO1",
+    "/cdn/shopifycloud/checkout-web/assets/c1/useEphemeralAddresses-legacy.D4tKujjb.js": "sha384-jV9s+aTC4zW+2IRC002Ed9RL+0sz5I33iJc4O2fL+WsjJkQWGxYbQiYmpHm0BaTf",
+    "/cdn/shopifycloud/checkout-web/assets/c1/useSubscribeMessenger-legacy.B9hAGbbe.js": "sha384-i10gq5eBhTe3fcM4qOZRla899unMpiFW8hs/GEnqYwhXy/Ygok1g8dLbHYwYK2ay",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-Information-legacy.AdPjcNcB.js": "sha384-DoRcv6WNdey4UkTsRoGv4Kl276zfAoumAKq0QWu+Txq/J8d2i5suVXbBYZjPpgEQ",
+    "/cdn/shopifycloud/checkout-web/assets/c1/LocalPickup-legacy.CJZbIFOk.js": "sha384-5eyV1+Wvni7Tzm62bw19+cKBDIZjnX3GALv/F+vLPYtB1Lji63HBd9asRsW6cwTJ",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ShopPayLogo-legacy.XUNGa1xD.js": "sha384-ZgJMWB+0DvG2SNLQ5s/Vo+18f2sqLQlgrwFjJJXqgS5Z/NAVwYXEa5bmhUsMlXU9",
+    "/cdn/shopifycloud/checkout-web/assets/c1/VaultedPayment-legacy.1-W6pGu_.js": "sha384-tjEamKP3LjqKG+MKMHoEolaiAVZ1EtbxKeH0Dbb9hxFP8QdsqFsHYwH5gnCbTRE2",
+    "/cdn/shopifycloud/checkout-web/assets/c1/PickupPointCarrierLogo-legacy.DLFHfjKI.js": "sha384-XMblDsNYYIWHtkVJar0kV9fr9iWqfJcFyYOFWitL1AVfMQfglgxQIOhoK0Rc7AfL",
+    "/cdn/shopifycloud/checkout-web/assets/c1/Trekkie-legacy.Du8J3FmU.js": "sha384-Y0I5frQjVgR4Z1kEzMaelXqE2pnphJwGAI2JaB0qiBcx1uSI31wlXCmf9rw2v9yt",
+    "/cdn/shopifycloud/checkout-web/assets/c1/qrcodegen-legacy.DWimPs6n.js": "sha384-yhP3J+Y1K9jiCnCpnLmUlmRUwiA2TjEPXNmoyQ6p7DqCd2e1TwtkLJn1BcJYqR0v",
+    "/cdn/shopifycloud/checkout-web/assets/c1/CheckoutEditorBridge-legacy.Bta0iGaZ.js": "sha384-yYZ9XD/kGb/6mPbjOk6FIavGZzyrv9FCKC/dR1/CKbUwafC6o5w8VLytneuL8vOL",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-ShopPayWrapper-legacy.C68s0yUz.js": "sha384-gsNVqB2r4qpXRWlur7Xlrpv0cdgCpSz/cRUgqej4/uvNWgrlRYQQtgDjvfpLM21P",
+    "/cdn/shopifycloud/checkout-web/assets/c1/flags-legacy.BMkLpRXr.js": "sha384-mYvHws7UjRkl6ZVXkeo90eUu83tCleWAUiG+66yTPCgT69AxGbKLeRN7eAae519u",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-PayPalButton-legacy.Wr7YUVbW.js": "sha384-LXD4tIXuZ3oWpNiM+ahAEwKbGFOwLa6KHgQJS3tNA6+iNiUlNpcjgkEbNF2JjjvA",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-ShopPayVerificationSwitch-legacy.nOFb6Wbp.js": "sha384-pjd8IoJMHqepjApJEVyNpXbc6t0LWwSzMBG2MjVic0yPNLctFt1cDcoFNv5P8rRR",
+    "/cdn/shopifycloud/checkout-web/assets/c1/shop-js-index-legacy.cx1INmWH.js": "sha384-IuIgE8P9wUWYuoo7KPp0giHiFzIwMLhxVeNadSxeMfepd7WIh4WzvmAq1eJ9s+Vu",
+    "/cdn/shopifycloud/checkout-web/assets/c1/actions-legacy.C_FcVbM_.js": "sha384-VfEH+rmgEleN8jy8JMTP8B6EuLUhhxUM8MDccXKKdONG4kRHgmvl7bqyT+bdoEMR",
+    "/cdn/shopifycloud/checkout-web/assets/c1/get-negotiation-input-legacy.DRcNoVOJ.js": "sha384-GOPVc/0yLTEKeOSK0l+YYM344oqhdV5xLX5P7Cv0F0nmQC9+JQejwtmZmbHLfpPh",
+    "/cdn/shopifycloud/checkout-web/assets/c1/map-async-dependencies-legacy.DBEXN4Wz.js": "sha384-pXjLcgfIGKNCUN1u6gbhs2iU+hczT47HrNCc4mn7aY3O/e6QnMcfdiJGmdajUk/P",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ShopPay-legacy.BHVH4Ffe.js": "sha384-8SAroaBK38L2D8MTsYB9QWE3aFmw1G6v8ja5SwZEDFctBvHN0MQRnF4OViwi3Bbs",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ShopPayButtonContainer-legacy.C_Xp5cW3.js": "sha384-kTR+jikAWh05xGHuEVab4KYVM8mInl5a0pI42bUpmbqP1ijKtn7hYzUuVYOPt52c",
+    "/cdn/shopifycloud/checkout-web/assets/c1/libphonenumber-index-legacy.BPiD4Gff.js": "sha384-QW8rx+hU2YQwGcg6lEpCOLdoAI7moYSeR8MMdGLMpaIsyxGZ4+UXQeydsqhiQDkE",
+    "/cdn/shopifycloud/checkout-web/assets/c1/ExtensionsInner-legacy.vS3pEEjT.js": "sha384-qpkSCGaXfRryPRlc4oOmj6RuujflTY7hsueVcCSHCM8gKSgsrYIQpaL6dSKx5iLg",
+    "/cdn/shopifycloud/checkout-web/assets/c1/component-GooglePayButton-legacy.zDGvB6yg.js": "sha384-J9h9F26uQF+UR0Bv6kvVVR2NxtNj2M7f65BJ9C3xl1Mh5KJ2GImmWfTpQL9g+8lu",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-zh-CN-legacy.ByGGdGpR.js": "sha384-A95fwr48ZmIML5hvbMvzZ37CP0Y8kJ/Z0o1y7jAVMZLBP4mMiOz51oabhHrog+qU",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-zh-TW-legacy.Dh5xHCF8.js": "sha384-de7ZARo2OV4s3opHshf9JX/Vyj6z/MSDjO4g7xciY4A3/Ywq2pTfQ0Hu8tXpFLr4",
+    "/cdn/shopifycloud/checkout-web/assets/c1/DevTools-legacy.Drou4kL4.js": "sha384-q/24CoWv8rGSjK+rcIOXOY2PYtJHD/1MQ8hVGVdJRRTfRozS/MRVGcAPgJPFDqgp",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-ja-legacy.CK40k2ag.js": "sha384-sN9QXs2MZSbYU6UxpQ4z9UFSaXKUgvJijzq3VIlyefFlOGe/aP5BPLJ2CostJOSu",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-ko-legacy.BBvpGR1K.js": "sha384-mKlQoMhceMbGs9dp3GJwLVGnDm3R0sjowZCUAn0SfffpNIGeQZQrf9BYCbUw1y01",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-OnePage-legacy.DPs968YF.js": "sha384-tOQ7cyy3yw6YaccCNiOsHVxbaIDzKx4ueYORj/J43jUxozFqQ8RPlVvYwQ70/xI/",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-ThankYou-legacy.0uyBQjbQ.js": "sha384-9xtaSj8FN8fP5In/uZi1+8LcVuLMUbQG1kuyOFy+F4T1vpKT7QJqLlQsG0FEC1k7",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-en-legacy.CyrZcFmE.js": "sha384-hiwDbRHh1z5p6Ec2AqC1sONaahJaMns6TWZTUuKu/vu8+9PlBNy8FZu/+REXFTij",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-th-legacy.BYokW1Fy.js": "sha384-r6HnqPmx/33kgF7o2nOPqaPP1RWjkMLSx4J3riu/C8xdKG3rVX3WFhyaKalljHo4",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-nb-legacy.emwhl5q6.js": "sha384-Hf12gM+t6maAh/PPdxNIdqL4FlrqXfA6XvFtgyrR7481uavkrBjeB3eQSk32P2PI",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-sv-legacy.Cr-Q_urn.js": "sha384-GulfBJ9pC26HFXvSCv99lPGWndZQPjp2DM/sWI7VErq0LE6sJlmhAFS/b5H/3DA0",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-da-legacy.DdQcqja1.js": "sha384-Li53fVk5wotyScE3RxoQVqTupMEvJ5KzQgg8wlzuGLAMYG8wMKVTeY/pE5eAzwjs",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-hi-legacy.CfglD28O.js": "sha384-/Xg72EBI5+xlw5Pd1AJ1eUmRfrORgnLhEVwnIXpqpMRBbF4577G/ELDt7UkId9mS",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-fi-legacy.C0Q6uTER.js": "sha384-Ol5x0oouAddOyXBkpqNYcYQdl9PgsY5jkCtiGOhjdvdZ4lgDGGs+MXf5XjzPjluS",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-vi-legacy.C9d5gCYh.js": "sha384-c2QXb1iFcS6B7LzBKG1X9Qip/Wc8KLnoC9cAGmtdgBevmLvwz2NJlPHvzvn39+/h",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-tr-legacy.C1v4Hv8e.js": "sha384-wQ8a7DqA86AWo9/9TpcLyEWvZH0kL4htHWY4v+/mbFORi59OEeo0KR5Ig4anN6FJ",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-id-legacy.Cv5pPP0Q.js": "sha384-fDELQfVByLnG5nQ+bnvxH/m1GlHRPwOBGi5f3jNLcEPVuTpcOI+M/cfVLAjpijxH",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-ms-legacy.BEGJrXaJ.js": "sha384-j8q+ekP3Sco9fcf5T9vZZ3DxYtw26GCHedejJgFt/7aNGW+4/FjPparomrQKdE1E",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-nl-legacy.D9wlstVk.js": "sha384-6IcoIj2xsLxHuyo7YLKIN0s7EbPTOtIsklzcYsUVZRsIRfjIMFUgVdF3dtuc1G+E",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-bg-legacy.U8owpZRV.js": "sha384-hOtaYoN/1TUQjWhgqbbHSHgJYNZ3S5n1C9nt/JnsJsXF2wNEMpoq0t4mq3hLCtJk",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-hu-legacy.CNjAOG6D.js": "sha384-bFOMo5ADhBH+H3gUZXabWP+nK8RZcqIqw9QDGRweLjH0rFxwItIHJG4pJ1H/WpGt",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-pt-BR-legacy.Bo0rGoHx.js": "sha384-uMfY/5QbuZYkUwTcHuwfV0X3z7dNox80IVT4Ru/0yvCa0lfUk4uYeeN7SrYhiCLk",
+    "/cdn/shopifycloud/checkout-web/assets/c1/page-PostPurchase-legacy.BEHDmB1h.js": "sha384-gg05kUriqf7Zno/PizU0JuKeLudKA5jDpFuUPne0Xg/ZtxMMdTJIL3WJqfZgR3Dg",
+    "/cdn/shopifycloud/checkout-web/assets/c1/PostPurchaseShouldRender-legacy.BzOZGB9X.js": "sha384-pNT7a3RwTIebovUaJJMSLwpV1Vwe+Mvfg+TZcrAjH5rk9XqaqZ692E+mTNN3/2Vr",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-hr-legacy.C7IxaZA3.js": "sha384-u88J5I1CxOmXbSY7A2wQkDQ7it6yucqmBaRbiWiGd4PltvhlWglemAoHu3TDktcQ",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-cs-legacy.BgZkr41q.js": "sha384-1IBSX9VO7Mv1atiL5wOvfrR8pbZ06KPIeNfjPL92MaHZHwEmaA1Lp+QCxKoLKF1U",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-sk-legacy.BOdVL5sy.js": "sha384-Cshyqvh9Z1raMtT+qe2v4j0yLsgxwKxGRvF/FGSpqkoWYml3Rn2cqjxKPaYhTnIb",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-pt-PT-legacy.fpR7_x2G.js": "sha384-XiIwpFV/PYXxGp0y/bFWw4bP4YHBJOD7U92KPcP9jcbvnqUtMFOChXmaY/iqKXaE",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-sl-legacy.CzE6o2pn.js": "sha384-kmZFFQa+BsdKp4/OnckNfOYqJusUAQ4qw5/foiLVJj33XcuV4uOQ2KHF5nxGD+/F",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-de-legacy.DD0Ur9ut.js": "sha384-QkwobI+T3zCYZktEq4TFeFp/wTg9gF80xakTuaoU2Gai1JEpKztDfQLXXlfa4cAS",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-ro-legacy.5LJuwWBE.js": "sha384-WcpgjAEWHkYOPwRxx13bMjN+U4B5wFrgwB0iAIpwAdECeaCO6FZ5T+zQOteZdwYh",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-es-legacy.F7B9wYa4.js": "sha384-tXaUPcA6yPQXBRzdFJE4919Qy/4tKyxC4wAscDlDfAjID+Jdge5sB8xpn9RBnwKG",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-it-legacy.DjlCCwG9.js": "sha384-aVQMM45/pfSr8Lzy9P1vebD7USHx07tXTOazeqd2pQHA7UOxhD6Vsxtc8eTY1qRG",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-lt-legacy.0TTL5V3Q.js": "sha384-qJGvat3nire/VRav7EHRMeMejMayDT92YAeJ/2SuOQBFHNweGwByQ5/h4jvuRVis",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-el-legacy.CiDbsTki.js": "sha384-QDjOco/AkDpglXzLWMzbArOCAnph5yLunlk0/5lMWa0B9hy0HyDoePYbzIYj9B0t",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-pl-legacy.BR2r2ssO.js": "sha384-TKGM3H66ZU3rUHUBv227JAhmGDd3pMxV05gBNCEZQgzoC4nmcp2j0E5B/h/U/mbc",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-ru-legacy.CuxxT0bG.js": "sha384-RGDVkZhhUUxE3jipBwH/8UOazvLKHkcLzByKblGh4Jc8DfP9d2iH+MeLfLbxC5D2",
+    "/cdn/shopifycloud/checkout-web/assets/c1/locale-fr-legacy.YsX9o86U.js": "sha384-rVGqnblYfGPieE38SLeSou0kPWcPpmgrdxmMJwH1Vqji9XLf6QirczxkKBnj7Jso",
+    "/cdn/shopifycloud/checkout-web/assets/c1/polyfills-legacy.Bs97d62E.js": "sha384-x2jH86MaJ6NKF/4EYodzMqPBpXbYONGQcg/DHYfGKlbyDbwiA8UP3Nwy8XctNU1q"
+  }
+}</script><link href="/cdn/shopifycloud/checkout-web/assets/c1/polyfills-legacy.Bs97d62E.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-x2jH86MaJ6NKF/4EYodzMqPBpXbYONGQcg/DHYfGKlbyDbwiA8UP3Nwy8XctNU1q" fetchPriority="high"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/app-legacy.BGG7-sxV.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-H7WPqrlXbNoOpvZZtVM7DngI6WMUMe6c2rPoOdEPuszN/wnJ6eQSMX+l0nlxFg1r" fetchPriority="high"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/vendor-legacy.C9CKPQLH.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-jpY+87/gsNnh1fpC3rF05jdau0dPz36rRwaim79Ti11vKJ7F4X9iYtCo8/8YY35n" fetchPriority="high"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/locale-en-legacy.CyrZcFmE.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-hiwDbRHh1z5p6Ec2AqC1sONaahJaMns6TWZTUuKu/vu8+9PlBNy8FZu/+REXFTij"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/page-OnePage-legacy.DPs968YF.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-tOQ7cyy3yw6YaccCNiOsHVxbaIDzKx4ueYORj/J43jUxozFqQ8RPlVvYwQ70/xI/"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/SeparatePaymentsNotice-legacy.D2RmEo32.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-aI7djSJDR883ZefOAGxdVdVfnhNZ0pMVzTO9m4RaxugvjHgDrL/AXhZZxlJczFNg"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/LocalPickup-legacy.CJZbIFOk.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-5eyV1+Wvni7Tzm62bw19+cKBDIZjnX3GALv/F+vLPYtB1Lji63HBd9asRsW6cwTJ"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/ShopPayLogo-legacy.XUNGa1xD.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-ZgJMWB+0DvG2SNLQ5s/Vo+18f2sqLQlgrwFjJJXqgS5Z/NAVwYXEa5bmhUsMlXU9"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/VaultedPayment-legacy.1-W6pGu_.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-tjEamKP3LjqKG+MKMHoEolaiAVZ1EtbxKeH0Dbb9hxFP8QdsqFsHYwH5gnCbTRE2"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/PickupPointCarrierLogo-legacy.DLFHfjKI.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-XMblDsNYYIWHtkVJar0kV9fr9iWqfJcFyYOFWitL1AVfMQfglgxQIOhoK0Rc7AfL"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/hooks-legacy.DssGu3oH.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-kyYE4tFGQWtMpkfACs6/9eqP/40gX3y0KTI5660+Rkuvg0ODuAbZQ8c68kgbkj6B"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/AddDiscountButton-legacy.CNFKmJ_L.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-a1rKWFrFhj6UoAkBzO8yEHQlncvIsf/Q+ULVMbAYeG7riBVFe4wdA8oj2sZeEWw7"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/RememberMeDescriptionText-legacy.CYhn5AXI.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-lgyYRQpgzLG+KEiMEx5vfh/9SqEK1Zncxv95h2NUeBP6NlgvRzKA4tiy2bmXFfgl"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/ShopPayOptInDisclaimer-legacy.r7uHsV1L.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-vQohdJuJB+9tR62niHWojhm9XNnXgiUNsn/7BwQT2zn5czv3kZYkibkXV3/t4hkk"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/MobileOrderSummary-legacy.DhUFEq1w.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-vezqQ3Ywz83UN+nqKy+vm+wx3bjRXRAOrPClAPfYY7fja7DaDZGzNKlMc6W95LVi"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/OrderEditVaultedDelivery-legacy.C7kRlN6C.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-W7izHzj7HxfKbjNnqTJKwzFNOl0+4qN1UGPDDekuTw+kgqtbOWW32iSQKHf1OCBu"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/StockProblemsLineItemList-legacy.BYmexfP7.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-SaNjFYOCsmQ2N3gjuQv59LBWHgPZmejwEwF5kEusLbgrmqAZe/QrYXJlgx6QjjxA"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/flags-legacy.BMkLpRXr.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-mYvHws7UjRkl6ZVXkeo90eUu83tCleWAUiG+66yTPCgT69AxGbKLeRN7eAae519u"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/DutyOptions-legacy.BpH6dWwS.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-GWC+L3OaDTf+a+KfPLzcWaAN99jWurgkQ8TDU2Qb7USjKmM+eYswHTAqHKkwdmPL"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/ShipmentBreakdown-legacy.CnXn1ggJ.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-/TtFPuSCuEwPb///hn+UfB0YBUMzh2p5obtLmg2Y5288iR3307CbEgR0lwOKgcRL"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/MerchandiseModal-legacy.BIeEY602.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-gF20KU23kGZ6olMVPiCMnxcY9+SVwsWDEnC6XWHohz+J4RrgQKvlf/RHGYrFPOKa"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/component-RuntimeExtension-legacy.DuBa33ZN.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-07MAFxiVLrJ/dCp27eBzIm15sSjNCGDunsrHcfOtfPxptALCKPm7y+B6g75Ve45u"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/AnnouncementRuntimeExtensions-legacy.BKp60smu.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-crEtxhYNCE9VfVrYbMGuM/WVZ9IFJsjpKZCl0ar8NDqUV/trXtv3VPzOIDfFiZON"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/rendering-extension-targets-legacy.DuGSG-_e.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-uSrYa0umVTR+qWmemGf1mejqeRY2fxeQtUXUx8fNeQie+FFTX/x7dpTJy/kfgp1k"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/v4-legacy.On_frbc2.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-TCdm6t9ewB52TdI6karf6smHzDK5imERZPCV7z2bwbVUR3W+ZcY/9CvmFrbNEcCH"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/ExtensionsInner-legacy.vS3pEEjT.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-qpkSCGaXfRryPRlc4oOmj6RuujflTY7hsueVcCSHCM8gKSgsrYIQpaL6dSKx5iLg"/><link href="/cdn/shopifycloud/checkout-web/assets/c1/Page-legacy.QBKcT3X3.js" data-checkout-critical="true" as="script" rel="preload" integrity="sha384-phgC/fKZhSoGtPBeHGAdXDe1kt+N/LysOui0ubNA6fJfa9ZORUYxS2lejRIV34tV"/><script defer src="/cdn/shopifycloud/checkout-web/assets/c1/polyfills-legacy.Bs97d62E.js" integrity="sha384-x2jH86MaJ6NKF/4EYodzMqPBpXbYONGQcg/DHYfGKlbyDbwiA8UP3Nwy8XctNU1q"></script><script defer src="/cdn/shopifycloud/checkout-web/assets/c1/app-legacy.BGG7-sxV.js" type="systemjs-module" integrity="sha384-H7WPqrlXbNoOpvZZtVM7DngI6WMUMe6c2rPoOdEPuszN/wnJ6eQSMX+l0nlxFg1r"></script><script defer src="/cdn/shopifycloud/checkout-web/assets/c1/vendor-legacy.C9CKPQLH.js" type="systemjs-module" integrity="sha384-jpY+87/gsNnh1fpC3rF05jdau0dPz36rRwaim79Ti11vKJ7F4X9iYtCo8/8YY35n"></script><script>window.location.href = 'https://bold3.org/checkouts/sessions/clone?source_type=cn&source_id=601026dc227fbc033a37efb47400c127&skip_fade_in=true&checkout_url=%2Fcheckouts%2Fcn%2F601026dc227fbc033a37efb47400c127%3Fskip_fade_in%3Dtrue';</script></body></html>

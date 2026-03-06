@@ -12,6 +12,7 @@ async def get_charge_resp(result, user_id, fullcc):
             hits = "NO"
 
             if (
+                "Charged Successfully" in result or
                 "SUCCESS" in result or
                 "Order #" in result or
                 "CARD_SUCCEEDED" in result or
