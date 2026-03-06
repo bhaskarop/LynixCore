@@ -12,22 +12,23 @@ async def get_hit_resp(result_tuple, user_id, fullcc):
         merchant = extra.get("merchant", "N/A")
         price = extra.get("price", "N/A")
         product = extra.get("product", "N/A")
+        gs = gate_status.lower()
 
-        if gate_status == "Charged":
+        if "charged" in gs:
             status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅"
-            response = f"Charged Successfully"
+            response = "Charged Successfully"
             hits = "YES"
             await forward_resp(fullcc, "Stripe Hit [MO]", response)
 
-        elif gate_status == "Live":
+        elif "live" in gs:
             status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎"
             response = gate_msg
             hits = "YES"
             await forward_resp(fullcc, "Stripe Hit [MO]", response)
 
-        elif gate_status == "3DS":
+        elif "3ds" in gs or "🔐" in gate_status:
             status = "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎"
-            response = "OTP Required"
+            response = gate_msg
             hits = "YES"
             await forward_resp(fullcc, "Stripe Hit [MO]", response)
 
