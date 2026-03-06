@@ -12,6 +12,7 @@ SERVICE_FILE="/etc/systemd/system/$APP_NAME.service"
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
+CYAN='\033[0;36m'
 NC='\033[0m'
 
 info()  { echo -e "${GREEN}[INFO]${NC}  $1"; }
@@ -20,79 +21,131 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
 # ─── Root check ───────────────────────────────────────────────────────
 if [ "$EUID" -ne 0 ]; then
-    error "Please run as root:  sudo bash setup.sh"
+    error "Please run as root:  sudo bash setup.sh [command]"
 fi
 
-# ─── 1. System update & packages ─────────────────────────────────────
-info "Updating system packages..."
-apt update && apt upgrade -y
+# ─── Usage ────────────────────────────────────────────────────────────
+show_help() {
+    echo ""
+    echo -e "  ${CYAN}LynixCore Telegram Bot — Setup Script${NC}"
+    echo ""
+    echo -e "  ${YELLOW}Usage:${NC}  sudo bash setup.sh [command]"
+    echo ""
+    echo -e "  ${YELLOW}Commands:${NC}"
+    echo "    install   Full first-time setup (default)"
+    echo "    update    Git pull + install deps + restart bot"
+    echo "    restart   Just restart the bot service"
+    echo "    stop      Stop the bot service"
+    echo "    logs      Show live bot logs"
+    echo "    status    Show bot service status"
+    echo "    help      Show this help"
+    echo ""
+}
 
-info "Installing required system packages..."
-apt install -y \
-    python3 \
-    python3-pip \
-    python3-venv \
-    git \
-    curl \
-    wget \
-    gnupg
+# ═══════════════════════════════════════════════════════════════════════
+#  UPDATE — git pull, install requirements, restart
+# ═══════════════════════════════════════════════════════════════════════
+do_update() {
+    info "Stopping bot..."
+    systemctl stop "$APP_NAME" 2>/dev/null || true
 
-# ─── 2. Install MongoDB ──────────────────────────────────────────────
-if ! command -v mongod &> /dev/null; then
-    info "Installing MongoDB 8.0..."
+    info "Pulling latest code..."
+    cd "$APP_DIR"
+    sudo -u "$APP_USER" git pull --ff-only || {
+        warn "git pull as $APP_USER failed, trying as root..."
+        git pull --ff-only
+        chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
+    }
 
-    # Remove any stale MongoDB repo files
-    rm -f /etc/apt/sources.list.d/mongodb-org-*.list
+    info "Installing Python dependencies..."
+    "$APP_DIR/venv/bin/pip" install --upgrade pip -q
+    "$APP_DIR/venv/bin/pip" install -r "$APP_DIR/requirements.txt" -q
 
-    curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
-        gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+    info "Fixing ownership..."
+    chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
 
-    # Use noble (24.04) repo — works on newer Ubuntu versions too
-    echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] \
+    info "Starting bot..."
+    systemctl daemon-reload
+    systemctl start "$APP_NAME"
+
+    echo ""
+    info "Update complete! Bot restarted."
+    echo ""
+    systemctl status "$APP_NAME" --no-pager -l
+    echo ""
+}
+
+# ═══════════════════════════════════════════════════════════════════════
+#  FULL INSTALL
+# ═══════════════════════════════════════════════════════════════════════
+do_install() {
+    # ─── 1. System update & packages ─────────────────────────────────
+    info "Updating system packages..."
+    apt update && apt upgrade -y
+
+    info "Installing required system packages..."
+    apt install -y \
+        python3 \
+        python3-pip \
+        python3-venv \
+        git \
+        curl \
+        wget \
+        gnupg
+
+    # ─── 2. Install MongoDB ──────────────────────────────────────────
+    if ! command -v mongod &> /dev/null; then
+        info "Installing MongoDB 8.0..."
+
+        rm -f /etc/apt/sources.list.d/mongodb-org-*.list
+
+        curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+            gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+
+        echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] \
 https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | \
-        tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+            tee /etc/apt/sources.list.d/mongodb-org-8.0.list
 
-    apt update
-    apt install -y mongodb-org
-    systemctl enable --now mongod
-    info "MongoDB installed and running."
-else
-    info "MongoDB already installed, skipping."
-fi
+        apt update
+        apt install -y mongodb-org
+        systemctl enable --now mongod
+        info "MongoDB installed and running."
+    else
+        info "MongoDB already installed, skipping."
+    fi
 
-# ─── 3. Create app user ──────────────────────────────────────────────
-if ! id "$APP_USER" &> /dev/null; then
-    info "Creating system user: $APP_USER"
-    useradd --system --shell /usr/sbin/nologin --home-dir "$APP_DIR" "$APP_USER"
-else
-    info "User $APP_USER already exists, skipping."
-fi
+    # ─── 3. Create app user ──────────────────────────────────────────
+    if ! id "$APP_USER" &> /dev/null; then
+        info "Creating system user: $APP_USER"
+        useradd --system --shell /usr/sbin/nologin --home-dir "$APP_DIR" "$APP_USER"
+    else
+        info "User $APP_USER already exists, skipping."
+    fi
 
-# ─── 4. Deploy application ───────────────────────────────────────────
-info "Setting up application directory at $APP_DIR..."
-mkdir -p "$APP_DIR"
+    # ─── 4. Deploy application ───────────────────────────────────────
+    info "Setting up application directory at $APP_DIR..."
+    mkdir -p "$APP_DIR"
 
-# Copy project files (run this script from the project root)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ "$SCRIPT_DIR" != "$APP_DIR" ]; then
-    cp -r "$SCRIPT_DIR"/* "$APP_DIR"/
-    cp -r "$SCRIPT_DIR"/.gitattributes "$APP_DIR"/ 2>/dev/null || true
-fi
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ "$SCRIPT_DIR" != "$APP_DIR" ]; then
+        cp -r "$SCRIPT_DIR"/* "$APP_DIR"/
+        cp -r "$SCRIPT_DIR"/.gitattributes "$APP_DIR"/ 2>/dev/null || true
+    fi
 
-# ─── 5. Python virtual environment ───────────────────────────────────
-info "Creating Python virtual environment..."
-$PYTHON_VERSION -m venv "$APP_DIR/venv"
+    # ─── 5. Python virtual environment ───────────────────────────────
+    info "Creating Python virtual environment..."
+    $PYTHON_VERSION -m venv "$APP_DIR/venv"
 
-info "Installing Python dependencies..."
-"$APP_DIR/venv/bin/pip" install --upgrade pip
-"$APP_DIR/venv/bin/pip" install -r "$APP_DIR/requirements.txt"
+    info "Installing Python dependencies..."
+    "$APP_DIR/venv/bin/pip" install --upgrade pip
+    "$APP_DIR/venv/bin/pip" install -r "$APP_DIR/requirements.txt"
 
-# ─── 6. Fix ownership ────────────────────────────────────────────────
-chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
+    # ─── 6. Fix ownership ────────────────────────────────────────────
+    chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
 
-# ─── 7. Create systemd service ───────────────────────────────────────
-info "Creating systemd service: $APP_NAME"
-cat > "$SERVICE_FILE" <<EOF
+    # ─── 7. Create systemd service ───────────────────────────────────
+    info "Creating systemd service: $APP_NAME"
+    cat > "$SERVICE_FILE" <<EOF
 [Unit]
 Description=LynixCore Telegram Bot
 After=network.target mongod.service
@@ -109,7 +162,6 @@ RestartSec=10
 StandardOutput=journal
 StandardError=journal
 
-# Hardening
 NoNewPrivileges=true
 ProtectSystem=full
 ProtectHome=true
@@ -119,22 +171,40 @@ PrivateTmp=true
 WantedBy=multi-user.target
 EOF
 
-# ─── 8. Enable & start service ───────────────────────────────────────
-info "Reloading systemd and enabling service..."
-systemctl daemon-reload
-systemctl enable "$APP_NAME"
-systemctl start "$APP_NAME"
+    # ─── 8. Enable & start service ───────────────────────────────────
+    info "Reloading systemd and enabling service..."
+    systemctl daemon-reload
+    systemctl enable "$APP_NAME"
+    systemctl start "$APP_NAME"
 
-# ─── 9. Status ────────────────────────────────────────────────────────
-echo ""
-info "Setup complete!"
-echo ""
-echo -e "  ${GREEN}Service status:${NC}"
-systemctl status "$APP_NAME" --no-pager -l
-echo ""
-echo -e "  ${YELLOW}Useful commands:${NC}"
-echo "    sudo systemctl status  $APP_NAME    # Check status"
-echo "    sudo systemctl restart $APP_NAME    # Restart bot"
-echo "    sudo systemctl stop    $APP_NAME    # Stop bot"
-echo "    sudo journalctl -u $APP_NAME -f     # Live logs"
-echo ""
+    # ─── 9. Status ───────────────────────────────────────────────────
+    echo ""
+    info "Setup complete!"
+    echo ""
+    echo -e "  ${GREEN}Service status:${NC}"
+    systemctl status "$APP_NAME" --no-pager -l
+    echo ""
+    echo -e "  ${YELLOW}Useful commands:${NC}"
+    echo "    sudo bash setup.sh update     # Pull + deps + restart"
+    echo "    sudo bash setup.sh restart    # Restart bot"
+    echo "    sudo bash setup.sh stop       # Stop bot"
+    echo "    sudo bash setup.sh logs       # Live logs"
+    echo "    sudo bash setup.sh status     # Check status"
+    echo ""
+}
+
+# ═══════════════════════════════════════════════════════════════════════
+#  COMMAND ROUTER
+# ═══════════════════════════════════════════════════════════════════════
+CMD="${1:-install}"
+
+case "$CMD" in
+    install)  do_install ;;
+    update)   do_update ;;
+    restart)  info "Restarting bot..."; systemctl restart "$APP_NAME"; systemctl status "$APP_NAME" --no-pager -l ;;
+    stop)     info "Stopping bot..."; systemctl stop "$APP_NAME"; info "Bot stopped." ;;
+    logs)     journalctl -u "$APP_NAME" -f ;;
+    status)   systemctl status "$APP_NAME" --no-pager -l ;;
+    help|-h)  show_help ;;
+    *)        error "Unknown command: $CMD\n  Run 'sudo bash setup.sh help' for usage." ;;
+esac
