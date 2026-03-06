@@ -3,11 +3,12 @@ set -euo pipefail
 
 # ─── Config ───────────────────────────────────────────────────────────
 APP_NAME="lynixcore-telegram"
-APP_DIR="/opt/$APP_NAME"
+# Use the directory where this script lives as the app directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_DIR="$SCRIPT_DIR"
 APP_USER="lynixbot"
 PYTHON_VERSION="python3"
 SERVICE_FILE="/etc/systemd/system/$APP_NAME.service"
-REPO_URL="https://github.com/bhaskarop/LynixCore.git"
 REPO_BRANCH="main"
 
 # ─── Colors ───────────────────────────────────────────────────────────
@@ -115,26 +116,8 @@ https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | \
     fi
 
     # ─── 4. Deploy application ───────────────────────────────────────
-    info "Setting up application directory at $APP_DIR..."
-
-    if [ -n "$REPO_URL" ]; then
-        if [ -d "$APP_DIR/.git" ]; then
-            info "Git repo exists, pulling latest..."
-            cd "$APP_DIR" && git fetch origin && git reset --hard "origin/$REPO_BRANCH"
-        else
-            info "Cloning repo from $REPO_URL ..."
-            rm -rf "$APP_DIR"
-            git clone -b "$REPO_BRANCH" "$REPO_URL" "$APP_DIR"
-        fi
-    else
-        mkdir -p "$APP_DIR"
-        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-        if [ "$SCRIPT_DIR" != "$APP_DIR" ]; then
-            cp -r "$SCRIPT_DIR"/* "$APP_DIR"/
-            cp -r "$SCRIPT_DIR"/.git "$APP_DIR"/ 2>/dev/null || true
-            cp -r "$SCRIPT_DIR"/.gitattributes "$APP_DIR"/ 2>/dev/null || true
-        fi
-    fi
+    info "Using existing application directory at $APP_DIR (current cloned repo)..."
+    mkdir -p "$APP_DIR"
 
     # ─── 5. Python virtual environment ───────────────────────────────
     info "Creating Python virtual environment..."
