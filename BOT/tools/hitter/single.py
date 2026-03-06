@@ -142,7 +142,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
             response = getresp["response"]
             receipt = getresp.get("receipt", "N/A")
 
-            url_line = f"\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- {receipt}" if receipt and receipt != "N/A" and "✅" in status else ""
+            url_line = f'\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- <a href="{receipt}">Success URL</a>' if receipt and receipt != "N/A" and "✅" in status else ""
 
             await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
 {status}
@@ -241,7 +241,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
         all_results = "\n".join(results_lines)
 
         if winner_cc:
-            url_line = f"\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- {winner_receipt}" if winner_receipt and winner_receipt != "N/A" else ""
+            url_line = f'\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- <a href="{winner_receipt}">Success URL</a>' if winner_receipt and winner_receipt != "N/A" else ""
 
             await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
 Hɪᴛ Sᴜᴄᴄᴇss ✅

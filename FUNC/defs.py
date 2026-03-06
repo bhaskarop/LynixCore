@@ -186,7 +186,7 @@ async def forward_hit_resp(fullcc, response, merchant, price, receipt, bin_str=N
         session = httpx.AsyncClient(timeout=30)
 
         bin_line = f"\n𝐁𝐈𝐍- <code>{bin_str}</code>" if bin_str else ""
-        url_line = f"\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- {receipt}" if receipt and receipt != "N/A" else ""
+        url_line = f'\n𝐒𝐮𝐜𝐜𝐞𝐬𝐬 𝐔𝐑𝐋- <a href="{receipt}">Success URL</a>' if receipt and receipt != "N/A" else ""
 
         resp = f"""<b>Hɪᴛ Sᴜᴄᴄᴇss ✅
 
