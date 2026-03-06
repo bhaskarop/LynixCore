@@ -7,6 +7,8 @@ APP_DIR="/opt/$APP_NAME"
 APP_USER="lynixbot"
 PYTHON_VERSION="python3"
 SERVICE_FILE="/etc/systemd/system/$APP_NAME.service"
+REPO_URL="https://github.com/bhaskarop/LynixCore.git"
+REPO_BRANCH="main"
 
 # ─── Colors ───────────────────────────────────────────────────────────
 GREEN='\033[0;32m'
@@ -49,13 +51,25 @@ do_update() {
     info "Stopping bot..."
     systemctl stop "$APP_NAME" 2>/dev/null || true
 
-    info "Pulling latest code..."
     cd "$APP_DIR"
-    sudo -u "$APP_USER" git pull --ff-only || {
-        warn "git pull as $APP_USER failed, trying as root..."
-        git pull --ff-only
-        chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
-    }
+
+    # If not a git repo yet, initialize from REPO_URL
+    if [ ! -d "$APP_DIR/.git" ]; then
+        if [ -z "$REPO_URL" ]; then
+            error "$APP_DIR is not a git repo. Set REPO_URL in setup.sh and try again."
+        fi
+        info "No .git found — initializing repo from $REPO_URL ..."
+        git init
+        git remote add origin "$REPO_URL"
+        git fetch origin
+        git checkout -f "$REPO_BRANCH"
+    else
+        info "Pulling latest code..."
+        git fetch origin
+        git reset --hard "origin/$REPO_BRANCH"
+    fi
+
+    chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
 
     info "Installing Python dependencies..."
     "$APP_DIR/venv/bin/pip" install --upgrade pip -q
@@ -124,12 +138,24 @@ https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | \
 
     # ─── 4. Deploy application ───────────────────────────────────────
     info "Setting up application directory at $APP_DIR..."
-    mkdir -p "$APP_DIR"
 
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    if [ "$SCRIPT_DIR" != "$APP_DIR" ]; then
-        cp -r "$SCRIPT_DIR"/* "$APP_DIR"/
-        cp -r "$SCRIPT_DIR"/.gitattributes "$APP_DIR"/ 2>/dev/null || true
+    if [ -n "$REPO_URL" ]; then
+        if [ -d "$APP_DIR/.git" ]; then
+            info "Git repo exists, pulling latest..."
+            cd "$APP_DIR" && git fetch origin && git reset --hard "origin/$REPO_BRANCH"
+        else
+            info "Cloning repo from $REPO_URL ..."
+            rm -rf "$APP_DIR"
+            git clone -b "$REPO_BRANCH" "$REPO_URL" "$APP_DIR"
+        fi
+    else
+        mkdir -p "$APP_DIR"
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        if [ "$SCRIPT_DIR" != "$APP_DIR" ]; then
+            cp -r "$SCRIPT_DIR"/* "$APP_DIR"/
+            cp -r "$SCRIPT_DIR"/.git "$APP_DIR"/ 2>/dev/null || true
+            cp -r "$SCRIPT_DIR"/.gitattributes "$APP_DIR"/ 2>/dev/null || true
+        fi
     fi
 
     # ─── 5. Python virtual environment ───────────────────────────────
