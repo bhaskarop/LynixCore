@@ -1,5 +1,5 @@
 pyrogram
-tgcrypto
+PyroTgCrypto
 stripe
 pymongo
 bs4
