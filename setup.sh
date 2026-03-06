@@ -53,7 +53,7 @@ do_update() {
 
     info "Pulling latest code..."
     cd "$APP_DIR"
-    git pull
+    git pull origin "$REPO_BRANCH" || warn "Pull skipped (already up to date or no changes)"
 
     info "Installing Python dependencies..."
     "$APP_DIR/venv/bin/pip" install -r "$APP_DIR/requirements.txt" -q
