@@ -31,7 +31,6 @@ async def hit_cmd(Client, message):
         user_id = str(message.from_user.id)
         checkall = await check_some_thing(Client, message)
 
-        gateway = "Stripe Hit [MO]"
         cmd = "/hit"
 
         if checkall[0] == False:
@@ -41,8 +40,6 @@ async def hit_cmd(Client, message):
 
         if len(parts) < 2:
             await message.reply_text(f"""<b>
-{gateway} ♻️
-
 Message: Provide a Stripe checkout URL ❌
 
 Usage: {cmd} &lt;checkout_url&gt; cc|mm|yy|cvv
@@ -53,7 +50,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt;</b>""", message.id)
 
         if "checkout.stripe.com" not in checkout_url and "cs_live" not in checkout_url and "cs_test" not in checkout_url:
             await message.reply_text(
-                f"<b>{gateway} ♻️\n\nMessage: Invalid Stripe checkout URL ❌</b>",
+                f"<b>Message: Invalid Stripe checkout URL ❌</b>",
                 message.id,
             )
             return
@@ -69,8 +66,6 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt;</b>""", message.id)
 
         if not raw_input:
             await message.reply_text(f"""<b>
-{gateway} ♻️
-
 Message: No CC or BIN Found ❌
 
 Usage: {cmd} &lt;checkout_url&gt; cc|mm|yy|cvv
@@ -82,8 +77,6 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt;</b>""", message.id)
 
         if not cc_tuple and not bin_str:
             await message.reply_text(f"""<b>
-{gateway} ♻️
-
 Message: Invalid CC or BIN format ❌
 
 Usage: {cmd} &lt;checkout_url&gt; cc|mm|yy|cvv
@@ -99,7 +92,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
             minfo = await retrieve_merchant_info(cs_live, pk_live, proxy=proxy)
             if minfo.get("error"):
                 await message.reply_text(
-                    f"<b>{gateway} ♻️\n\nCheckout Error: {minfo['error']} ❌</b>",
+                    f"<b>Checkout Error: {minfo['error']} ❌</b>",
                     message.id,
                 )
                 return
@@ -109,7 +102,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
                 merchant = "Unknown Merchant"
         except ValueError as e:
             await message.reply_text(
-                f"<b>{gateway} ♻️\n\nURL Parse Error: {e} ❌</b>",
+                f"<b>URL Parse Error: {e} ❌</b>",
                 message.id,
             )
             return
@@ -127,7 +120,6 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
 ↯ Hitting...
 
 𝗖𝗮𝗿𝗱- <code>{fullcc}</code>
-𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
 𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
 𝐏𝐫𝐢𝐜𝐞- {price}
 
@@ -167,7 +159,6 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
 ↯ BIN Mode — Generating 10 cards
 
 𝐁𝐈𝐍- <code>{bin_str}</code>
-𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
 𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
 𝐏𝐫𝐢𝐜𝐞- {price}
 
@@ -179,7 +170,7 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
 
         if not cards:
             await Client.edit_message_text(message.chat.id, progress.id,
-                f"<b>{gateway} ♻️\n\nFailed to generate cards from BIN {bin_str} ❌</b>")
+                f"<b>Failed to generate cards from BIN {bin_str} ❌</b>")
             return
 
         start = time.perf_counter()
@@ -261,7 +252,6 @@ Hɪᴛ Sᴜᴄᴄᴇss ✅
             await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
 𝐇𝐢𝐭 𝐒𝐮𝐦𝐦𝐚𝐫𝐲 — BIN: <code>{bin_str}</code>
 
-𝐆𝐚𝐭𝐞𝐰𝐚𝐲- <i>{gateway}</i>
 𝐌𝐞𝐫𝐜𝐡𝐚𝐧𝐭- {merchant}
 𝐏𝐫𝐢𝐜𝐞- {price}
 
