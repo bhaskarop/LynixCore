@@ -11,8 +11,13 @@ REQUIRED_CHANNEL_LINK = "https://t.me/LynixCheckouter"
 async def is_channel_member(client, user_id):
     """Check if user has joined the required channel."""
     try:
+        from pyrogram.enums import ChatMemberStatus
         member = await client.get_chat_member(REQUIRED_CHANNEL_ID, int(user_id))
-        return member.status.name in ("MEMBER", "ADMINISTRATOR", "OWNER")
+        return member.status in (
+            ChatMemberStatus.MEMBER,
+            ChatMemberStatus.ADMINISTRATOR,
+            ChatMemberStatus.OWNER,
+        )
     except Exception:
         return False
 

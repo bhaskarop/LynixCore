@@ -354,6 +354,42 @@ def detect_gateways(html_source):
     return found
 
 
+# Common payment/checkout paths to auto-crawl from any domain
+CHECKOUT_PATHS = [
+    "/checkout", "/cart", "/payment", "/pay", "/payments",
+    "/pricing", "/plans", "/subscribe", "/donate", "/billing",
+    "/store", "/shop", "/products", "/order", "/purchase",
+    "/membership", "/join", "/signup", "/register",
+    "/wp-json/wc/v3", "/wc-api/v3",
+]
+
+# Keywords to find in internal links that suggest payment pages
+PAYMENT_LINK_KEYWORDS = [
+    "checkout", "cart", "payment", "pay", "pricing",
+    "plans", "subscribe", "donate", "billing", "store",
+    "shop", "order", "purchase", "membership", "buy",
+]
+
+
+def _extract_payment_links(html_source, base_url):
+    """Extract internal links that look like payment/checkout pages."""
+    from urllib.parse import urljoin, urlparse
+    base_domain = urlparse(base_url).netloc
+    links = set()
+    # Find all href values
+    for match in re.finditer(r'href=["\']([^"\']+)["\']', html_source, re.I):
+        href = match.group(1)
+        full_url = urljoin(base_url, href)
+        parsed = urlparse(full_url)
+        # Only internal links
+        if parsed.netloc and parsed.netloc != base_domain:
+            continue
+        path_lower = parsed.path.lower()
+        if any(kw in path_lower for kw in PAYMENT_LINK_KEYWORDS):
+            links.add(full_url)
+    return list(links)[:10]  # Limit to 10
+
+
 @Client.on_message(filters.command("url", [".", "/"]))
 async def cmd_url(Client, message):
     try:
@@ -385,47 +421,90 @@ Please provide a valid website URL.</b>"""
 
         # ── Loading message ──
         loading = await message.reply_text(
-            "<b>🔍 Scanning website for gateways...\nPlease wait ⏳</b>",
+            "<b>🔍 Deep scanning website for gateways...\n⏳ Checking main page + payment paths...</b>",
             reply_to_message_id=message.id
         )
 
-        # ── Fetch page ──
+        # ── Build URL list to crawl ──
+        from urllib.parse import urlparse
+        parsed = urlparse(url)
+        base = f"{parsed.scheme}://{parsed.netloc}"
+        urls_to_check = [url]  # User's URL first
+
+        # Add common checkout paths
+        for path in CHECKOUT_PATHS:
+            candidate = base + path
+            if candidate != url:
+                urls_to_check.append(candidate)
+
+        # ── Fetch all pages concurrently ──
+        import asyncio
+        all_html = ""
+        pages_scanned = 0
+        pages_found = 0
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Accept-Encoding": "gzip, deflate, br",
+        }
+
+        async def fetch_page(session, page_url):
+            try:
+                r = await session.get(page_url, headers=headers, timeout=10)
+                if r.status_code == 200:
+                    return r.text
+            except Exception:
+                pass
+            return ""
+
         try:
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language": "en-US,en;q=0.9",
-                "Accept-Encoding": "gzip, deflate, br",
-            }
             async with httpx.AsyncClient(
                 follow_redirects=True,
-                timeout=20,
+                timeout=15,
                 verify=False
             ) as session:
-                response = await session.get(url, headers=headers)
-                html_source = response.text
+                # Fetch main page first
+                main_html = await fetch_page(session, url)
+                if main_html:
+                    all_html += main_html
+                    pages_found += 1
 
-        except httpx.TimeoutException:
-            await Client.edit_message_text(
-                message.chat.id, loading.id,
-                "<b>Timeout Error ⚠️\n\nThe website took too long to respond. Try again later.</b>"
-            )
-            return
-        except httpx.ConnectError:
-            await Client.edit_message_text(
-                message.chat.id, loading.id,
-                "<b>Connection Error ⚠️\n\nCould not connect to the website. Check the URL and try again.</b>"
-            )
-            return
+                    # Extract payment-related internal links from main page
+                    discovered = _extract_payment_links(main_html, url)
+                    for link in discovered:
+                        if link not in urls_to_check:
+                            urls_to_check.append(link)
+
+                # Update progress
+                await Client.edit_message_text(
+                    message.chat.id, loading.id,
+                    f"<b>🔍 Deep scanning...\n⏳ Checking {len(urls_to_check)} pages...</b>"
+                )
+
+                # Fetch remaining pages concurrently (batch of 5)
+                remaining = urls_to_check[1:]
+                for i in range(0, len(remaining), 5):
+                    batch = remaining[i:i+5]
+                    results = await asyncio.gather(*[fetch_page(session, u) for u in batch])
+                    for html in results:
+                        pages_scanned += 1
+                        if html:
+                            all_html += html
+                            pages_found += 1
+
         except Exception as e:
-            await Client.edit_message_text(
-                message.chat.id, loading.id,
-                f"<b>Error Fetching URL ⚠️\n\nMessage: {str(e)[:200]}</b>"
-            )
-            return
+            if not all_html:
+                await Client.edit_message_text(
+                    message.chat.id, loading.id,
+                    f"<b>Error Fetching URL ⚠️\n\nMessage: {str(e)[:200]}</b>"
+                )
+                return
 
-        # ── Detect gateways ──
-        gateways = detect_gateways(html_source)
+        # ── Detect gateways from combined HTML ──
+        gateways = detect_gateways(all_html)
+        total_scanned = pages_found
 
         if gateways:
             gateway_list = "\n".join(
@@ -436,6 +515,7 @@ Please provide a valid website URL.</b>"""
 <b>Gateway Hunter Results ✅</b>
 ━━━━━━━━━━━━━━
 🌐 <b>URL:</b> <code>{url}</code>
+📄 <b>Pages Scanned:</b> <code>{total_scanned}</code>
 🔍 <b>Gateways Found:</b> <code>{len(gateways)}</code>
 
 {gateway_list}
@@ -448,10 +528,11 @@ Please provide a valid website URL.</b>"""
 <b>Gateway Hunter Results ❌</b>
 ━━━━━━━━━━━━━━
 🌐 <b>URL:</b> <code>{url}</code>
+📄 <b>Pages Scanned:</b> <code>{total_scanned}</code>
 🔍 <b>Gateways Found:</b> <code>0</code>
 
-<i>No payment gateways detected on this page.
-Try the checkout or payment page directly.</i>
+<i>No payment gateways detected after deep scan.
+Scanned {total_scanned} pages including checkout paths.</i>
 ━━━━━━━━━━━━━━
 <b>Checked By:</b> <a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a> [ {role} ]
 <b>Owned by:</b> <a href="tg://user?id=8239967579">KaiZen﹒ ⁺</a> [ @bhaskargg ]
@@ -460,3 +541,4 @@ Try the checkout or payment page directly.</i>
 
     except Exception:
         await log_cmd_error(message)
+
