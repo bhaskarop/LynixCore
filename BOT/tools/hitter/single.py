@@ -29,6 +29,8 @@ def _parse_bin(text):
 async def hit_cmd(Client, message):
     try:
         user_id = str(message.from_user.id)
+        user_name = message.from_user.first_name or user_id
+        user_link = f'<a href="tg://user?id={user_id}">{user_name}</a>'
         checkall = await check_some_thing(Client, message)
 
         cmd = "/hit"
@@ -145,10 +147,16 @@ Or: {cmd} &lt;checkout_url&gt; &lt;BIN&gt; (6-16 digits)</b>""", message.id)
 𝗖𝗮𝗿𝗱- <code>{fullcc}</code>{url_line}
 
 𝗧𝗶𝗺𝗲- {time.perf_counter() - start:0.2f} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬
+𝐁𝐲- {user_link}
 </b>""")
 
             if "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝" in status:
                 await forward_hit_resp(fullcc, response, merchant, price, receipt)
+
+            try:
+                await message.delete()
+            except Exception:
+                pass
 
             return
 
@@ -244,6 +252,7 @@ Hɪᴛ Sᴜᴄᴄᴇss ✅
 
 𝐂𝐡𝐞𝐜𝐤𝐞𝐝- {checked}/{len(cards)} | ✅ {approved} | ❌ {declined}
 𝗧𝗶𝗺𝗲- {elapsed:0.2f} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬
+𝐁𝐲- {user_link}
 </b>""")
 
             await forward_hit_resp(winner_cc, winner_resp, merchant, price, winner_receipt, bin_str=bin_str)
@@ -259,7 +268,14 @@ Hɪᴛ Sᴜᴄᴄᴇss ✅
 
 𝐂𝐡𝐞𝐜𝐤𝐞𝐝- {checked}/{len(cards)} | ✅ {approved} | ❌ {declined}{stop_line}
 𝗧𝗶𝗺𝗲- {elapsed:0.2f} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬
+𝐁𝐲- {user_link}
 </b>""")
+
+        # Delete user's /hit command message after processing
+        try:
+            await message.delete()
+        except Exception:
+            pass
 
     except Exception:
         await log_cmd_error(message)

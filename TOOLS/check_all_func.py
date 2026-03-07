@@ -4,6 +4,17 @@ from FUNC.defs import *
 
 gate_active    = json.loads(open("FILES/deadsk.json", "r" , encoding="utf-8").read())["gate_active"]
 
+REQUIRED_CHANNEL_ID = -1003762736789
+REQUIRED_CHANNEL_LINK = "https://t.me/LynixCheckouter"
+
+
+async def is_channel_member(client, user_id):
+    """Check if user has joined the required channel."""
+    try:
+        member = await client.get_chat_member(REQUIRED_CHANNEL_ID, int(user_id))
+        return member.status.name in ("MEMBER", "ADMINISTRATOR", "OWNER")
+    except Exception:
+        return False
 
 async def check_all_thing(Client , message):
     try:
@@ -41,14 +52,18 @@ Type /register to Continue
         await plan_expirychk(user_id)
 
         if chat_type == "ChatType.PRIVATE" and status == "FREE":
-            resp = f"""<b>
-Premium Users Required ⚠️
+            if not await is_channel_member(Client, user_id):
+                from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+                resp = f"""<b>
+⚠️ Join Our Channel First!
 
-Message: Only Premium Users are Allowed to use bot in Personal . Although You Can Use Bot Free Here https://t.me/LynixCheckouter
-Buy Premium Plan Using /buy to Continue
+To use bot in DMs for free, join our channel:
 </b>"""
-            await message.reply_text(resp ,  reply_to_message_id = message.id)
-            return False , False
+                btn = InlineKeyboardMarkup([
+                    [InlineKeyboardButton("📢 Join Channel", url=REQUIRED_CHANNEL_LINK)],
+                ])
+                await message.reply_text(resp, reply_to_message_id=message.id, reply_markup=btn)
+                return False, False, False
 
         if (
             chat_type == "ChatType.GROUP"
@@ -133,14 +148,19 @@ Type /register to Continue
         await plan_expirychk(user_id)
 
         if chat_type == "ChatType.PRIVATE" and status == "FREE":
-            resp = """<b>
-Premium Users Required ⚠️
+            if await is_channel_member(Client, user_id):
+                return True, status
+            from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+            resp = f"""<b>
+⚠️ Join Our Channel First!
 
-Message: Only Premium Users are Allowed to use bot in Personal . Although You Can Use Bot Free Here https://t.me/LynixCheckouter
-Buy Premium Plan Using /buy to Continue
+To use bot in DMs for free, join our channel:
 </b>"""
-            await message.reply_text(resp , message_id=message.id)
-            return False , False
+            btn = InlineKeyboardMarkup([
+                [InlineKeyboardButton("📢 Join Channel", url=REQUIRED_CHANNEL_LINK)],
+            ])
+            await message.reply_text(resp, reply_to_message_id=message.id, reply_markup=btn)
+            return False, False
 
         if (
             chat_type == "ChatType.GROUP"

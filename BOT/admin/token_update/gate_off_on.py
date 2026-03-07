@@ -1,18 +1,14 @@
 import json
 from pyrogram import Client, filters
 from FUNC.defs import error_log
+from FUNC.admin_auth import is_admin_or_owner
 
 @Client.on_message(filters.command("gateoff", [".", "/"]))
 async def update_dead_amount(Client, message):
     try:
         user_id = str(message.from_user.id)
-        OWNER_ID = json.loads(open("FILES/config.json", "r", encoding="utf-8").read())["OWNER_ID"]
-        if user_id not in OWNER_ID:
-            resp = """<b>Privilege Not Found ⚠️
-
-Message: To Perform This Action, You Need Admin Level Power. 
-
-Contact @bhaskargg For More Info ✅</b>"""
+        if not await is_admin_or_owner(user_id):
+            resp = "<b>⛔ Access Denied — Admin only.</b>"
             await message.reply_text(resp)
             return
 
@@ -55,13 +51,8 @@ Now /{new_command} gate not available.⚠️
 async def remove_command(Client, message):
     try:
         user_id = str(message.from_user.id)
-        OWNER_ID = json.loads(open("FILES/config.json", "r", encoding="utf-8").read())["OWNER_ID"]
-        if user_id not in OWNER_ID:
-            resp = """<b>Privilege Not Found ⚠️
-
-Message: To Perform This Action, You Need Admin Level Power. 
-
-Contact @bhaskargg For More Info ✅</b>"""
+        if not await is_admin_or_owner(user_id):
+            resp = "<b>⛔ Access Denied — Admin only.</b>"
             await message.reply_text(resp)
             return
 

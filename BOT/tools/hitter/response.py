@@ -32,12 +32,18 @@ async def get_hit_resp(result_tuple, user_id, fullcc):
             hits = "YES"
 
         else:
-            status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
-            response = gate_msg
-            hits = "NO"
+            gs_msg = gate_msg.lower()
+            if any(kw in gs_msg for kw in ["3ds", "authentication", "payment failed"]):
+                status = "3DS Detected 🔐"
+                response = gate_msg
+                hits = "NO"
+            else:
+                status = "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
+                response = gate_msg
+                hits = "NO"
 
-            if "proxy" in gate_msg.lower():
-                await refundcredit(user_id)
+                if "proxy" in gate_msg.lower():
+                    await refundcredit(user_id)
 
         return {
             "status": status,

@@ -22,5 +22,6 @@ usersdb = folder.USERSDB
 chats_auth = folder.CHATS_AUTH 
 gcdb = folder.GCDB 
 proxydb = folder.PROXYDB
+adminsdb = folder.ADMINSDB
 sksdb = client["SKS_DATABASE"].SKS 
 confdb = client["SKS_DATABASE"].CONF_DATABASE

@@ -1,7 +1,7 @@
-import json
 from pyrogram import Client, filters
 from FUNC.usersdb_func import *
 from FUNC.defs import *
+from FUNC.admin_auth import is_admin_or_owner
 
 
 async def remove_user_from_db(user_id):
@@ -15,15 +15,8 @@ async def remove_user_from_db(user_id):
 async def cmd_deluser(Client, message):
     try:
         user_id = str(message.from_user.id)
-        OWNER_ID = json.loads(
-            open("FILES/config.json", "r", encoding="utf-8").read())["OWNER_ID"]
-
-        if user_id not in OWNER_ID:
-            resp = """<b>Privilege Not Found ⚠️
-
-Message: To perform this action, you need admin level power. 
-
-Contact @bhaskargg For More Info ✅</b>"""
+        if not await is_admin_or_owner(user_id):
+            resp = "<b>⛔ Access Denied — Admin only.</b>"
             await message.reply_text(resp, message.id)
             return
 

@@ -1,18 +1,13 @@
-import json
 from pyrogram import Client, filters
 from FUNC.usersdb_func import *
+from FUNC.admin_auth import is_admin_or_owner
 
 @Client.on_message(filters.command("add", [".", "/"]))
 async def cmd_add(client, message):
     try:
         user_id = str(message.from_user.id)
-        OWNER_ID = json.loads(open("FILES/config.json", "r", encoding="utf-8").read())["OWNER_ID"]
-        if user_id not in OWNER_ID:
-            resp = (
-                "<b>⛔️ Access Denied</b>\n\n"
-                "<i>You do not have permission to use this command.</i>\n"
-                "Please contact the bot owner @bhaskargg for access."
-            )
+        if not await is_admin_or_owner(user_id):
+            resp = "<b>⛔ Access Denied — Admin only.</b>"
             await message.reply_text(resp, quote=True)
             return
 

@@ -96,6 +96,24 @@ Message: Congratz ! Your Provided Giftcode Successfully Redeemed to Your Acoount
 </b>"""
             await message.reply_text(resp, message.id)
 
+        elif status == "ACTIVE" and type == "PLAN_DAYS":
+            days = int(detail.get("days", 7))
+            await plangc_days(user_id, days)
+            await updategc(gc)
+            resp = f"""
+╔══════════════════════════╗
+     ✅ <b>REDEEMED</b>
+╚══════════════════════════╝
+
+┌ <b>Code:</b> <code>{gc}</code>
+├ <b>User:</b> <code>{user_id}</code>
+├ <b>Plan:</b> {days}-Day Premium
+└ <b>Status:</b> Activated ✅
+
+<i>Enjoy your {days} days of premium access!</i>
+"""
+            await message.reply_text(resp, message.id)
+
         elif status == "USED":
             resp = f"""<b>
 Already Redeemed ⚠️

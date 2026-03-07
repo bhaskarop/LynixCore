@@ -70,7 +70,7 @@ def _classify_decline(decline_code: str, error_code: str, message: str) -> tuple
     for code, (label, status) in DECLINE_MAP.items():
         if code in msg_lower:
             return label, status
-    clean = message.replace("_", " ").strip() if message else "Payment Failed"
+    clean = message.replace("_", " ").strip() if message else "Unknown Decline"
     return clean, "dead"
 
 
@@ -783,11 +783,11 @@ async def stripe_gate(
 
         if not pi:
             err = j3.get("error") or {}
-            return _classify_and_return(err.get("decline_code", ""), err.get("code", ""), err.get("message", "Payment Failed"), extra)
+            return _classify_and_return(err.get("decline_code", ""), err.get("code", ""), err.get("message", "3DS / Authentication Required 🔐"), extra)
 
         if not payatt:
             err = j3.get("error") or {}
-            dcode, code, msg = err.get("decline_code", ""), err.get("code", ""), err.get("message", "Payment Failed")
+            dcode, code, msg = err.get("decline_code", ""), err.get("code", ""), err.get("message", "3DS / Authentication Required 🔐")
             clean_msg, stype = _classify_decline(dcode, code, msg)
             if stype == "live":
                 return "Approved! ✅ -» live", clean_msg, extra(decline_code=dcode or code, stripe_msg=msg)

@@ -118,3 +118,26 @@ async def onlycredits(user_id):
     validity = f"{dd}-{mm}-{yy}"
     usersdb.update_one({"id": user_id}, {"$set": {"expiry": validity}})
 
+
+async def insert_plan_days(gc, days):
+    """Insert a gift code with a custom day duration."""
+    from mongodb import gcdb
+    info = {"gc": gc, "status": "ACTIVE", "type": "PLAN_DAYS", "days": int(days)}
+    gcdb.insert_one(info)
+
+
+async def plangc_days(user_id, days):
+    """Apply a custom-day plan to a user."""
+    await check_negetive_credits(user_id)
+    get_user_info = await getuserinfo(user_id)
+    setkey = int(get_user_info["totalkey"]) + 1
+    usersdb.update_one({"id": user_id}, {"$set": {"totalkey": setkey}})
+    if get_user_info["status"] == "FREE":
+        usersdb.update_one({"id": user_id}, {"$set": {"status": "PREMIUM"}})
+
+    usersdb.update_one({"id": user_id}, {"$set": {"plan": f"Gift Plan {days}D ∞"}})
+    getvalidity = str(date.today() + timedelta(days=int(days))).split("-")
+    yy, mm, dd = getvalidity[0], getvalidity[1], getvalidity[2]
+    validity = f"{dd}-{mm}-{yy}"
+    usersdb.update_one({"id": user_id}, {"$set": {"expiry": validity}})
+

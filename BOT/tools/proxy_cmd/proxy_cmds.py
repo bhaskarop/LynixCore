@@ -98,16 +98,67 @@ One proxy per line. Supported formats:
             await message.reply_text("<b>No valid proxy lines found ❌</b>", message.id)
             return
 
-        added, skipped = await add_user_proxies(user_id, raw_lines)
-        total = len(await get_user_proxies(user_id))
+        # Show checking progress
+        progress = await message.reply_text(f"""<b>
+🔍 𝐂𝐡𝐞𝐜𝐤𝐢𝐧𝐠 {len(raw_lines)} 𝐏𝐫𝐨𝐱𝐢𝐞𝐬...
 
-        await message.reply_text(f"""<b>
-𝐏𝐫𝐨𝐱𝐢𝐞𝐬 𝐀𝐝𝐝𝐞𝐝 ✅
-
-Added: {added}
-Skipped (invalid/duplicate): {skipped}
-Total Proxies: {total}
+⏳ Testing connectivity & measuring ping...
 </b>""", message.id)
+
+        # Normalize proxies first
+        from FUNC.proxydb_func import _normalize_proxy
+        normalized = []
+        invalid_count = 0
+        for line in raw_lines:
+            norm = _normalize_proxy(line)
+            if norm:
+                normalized.append(norm)
+            else:
+                invalid_count += 1
+
+        if not normalized:
+            await Client.edit_message_text(message.chat.id, progress.id,
+                "<b>No valid proxy formats found ❌</b>")
+            return
+
+        # Check all proxies
+        from .proxy_checker import check_proxies_batch
+        results = await check_proxies_batch(normalized)
+
+        # Separate alive vs dead
+        alive_proxies = []
+        result_lines = []
+        alive_count = 0
+        dead_count = 0
+
+        for proxy, is_alive, ping_ms, emoji, label in results:
+            masked = _mask_proxy(proxy)
+            if is_alive:
+                alive_count += 1
+                alive_proxies.append(proxy)
+                result_lines.append(f"{emoji} {masked} — <code>{ping_ms}ms</code> ({label})")
+            else:
+                dead_count += 1
+                result_lines.append(f"❌ {masked} — Dead")
+
+        # Add only alive proxies
+        added = 0
+        skipped_dup = 0
+        if alive_proxies:
+            added, skipped_dup = await add_user_proxies(user_id, alive_proxies)
+
+        total = len(await get_user_proxies(user_id))
+        results_text = "\n".join(result_lines)
+
+        await Client.edit_message_text(message.chat.id, progress.id, f"""<b>
+🌐 𝐏𝐫𝐨𝐱𝐲 𝐂𝐡𝐞𝐜𝐤 𝐑𝐞𝐬𝐮𝐥𝐭𝐬
+
+{results_text}
+
+━━━━━━━━━━━━━━━━━━
+✅ Alive: {alive_count} | ❌ Dead: {dead_count}{f" | ⚠️ Invalid: {invalid_count}" if invalid_count else ""}{f" | 🔁 Duplicate: {skipped_dup}" if skipped_dup else ""}
+Added: {added} | Total Proxies: {total}
+</b>""")
 
     except Exception:
         await log_cmd_error(message)

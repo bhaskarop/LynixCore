@@ -1,11 +1,11 @@
 import asyncio
-import json
 import threading
 import time
 from datetime import timedelta
 from pyrogram import Client, filters
 from FUNC.defs import *
 from FUNC.usersdb_func import *
+from FUNC.admin_auth import is_admin_or_owner
 
 
 async def message_forward_xcc(original_message , user_id):
@@ -32,10 +32,8 @@ def bcall(Client, message):
 async def brod_cmd(Client, message):
     try:
         user_id     = str(message.from_user.id)
-        OWNER_ID    = json.loads(open("FILES/config.json", "r" , encoding="utf-8").read())["OWNER_ID"]
-        if user_id not in OWNER_ID:
-            resp = """<b>You Don't Have Permission To Use This Command.    
-Contact Bot Owner @bhaskargg !</b>"""
+        if not await is_admin_or_owner(user_id):
+            resp = "<b>⛔ Access Denied — Admin only.</b>"
             await message.reply_text(resp, message.id)
             return
         
